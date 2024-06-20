@@ -28,8 +28,9 @@
         <% else %>
           <%= link_to "", star_path(id: t_direct_message['id']), class: 'far fa-star' %>
         <% end %>
-
-        <%= link_to "", delete_directmsg_path(id: t_direct_message['id']), class: 'glyphicon glyphicon-trash' %>
+        <% if session[:m_user] == t_direct_message['name'] %>
+          <%= link_to "", delete_directmsg_path(id: t_direct_message['id']),class: 'glyphicon glyphicon-trash' %>
+        <% end %>
 
         <p class="style3" style="word-wrap: break-word; width: 550px"> --> <%= t_direct_message['directmsg'] %></p>
         <hr>
@@ -41,5 +42,4 @@
 
 <script>
   window.scrollTo(0, document.body.scrollHeight);
-  
 </script>
