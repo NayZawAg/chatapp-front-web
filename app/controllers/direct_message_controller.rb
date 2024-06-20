@@ -77,5 +77,4 @@ class DirectMessageController < ApplicationController
       redirect_to t_direct_message_path(session[:s_direct_message_id])
     end
   end
-
 end

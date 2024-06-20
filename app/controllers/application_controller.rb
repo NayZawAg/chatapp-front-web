@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   include FaradayApiClient
   include SessionsHelper
 
-
   def retrievehome
     response = get_data('/main')
 
@@ -32,7 +31,7 @@ class ApplicationController < ActionController::Base
     session[:current_user_id] = @current_user_id
     session[:m_channels] = response["m_channels"]
     session[:m_user_email] = @current_user["email"]
-     # session[:m_users] = response["m_users"]
+    # session[:m_users] = response["m_users"]
     # session[:m_p_channels] = response["m_p_channels"]
     # session[:m_channelsids] = response["m_channelsids"]
     session[:m_user] = @current_user["name"]
@@ -48,11 +47,9 @@ class ApplicationController < ActionController::Base
     @t_direct_star_msgids = response['t_direct_star_msgids']
     @t_direct_message_dates =  response['t_direct_message_dates'].sort_by{|e| e['created_date']} || []
     @t_direct_message_datesize = response['t_direct_message_datesize']
-
   end
 
   def retrieve_direct_thread
-    
     response = get_data("/directhread/#{session[:s_direct_message_id]}")
     @s_user = response['s_user']
     @t_direct_message = response['t_direct_message']
