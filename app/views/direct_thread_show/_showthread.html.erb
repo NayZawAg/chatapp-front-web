@@ -9,11 +9,11 @@
 
       <p class="style21">1</p>
 
-      <p class="style22"><%= @sender_name%></p>
+      <p class="style22"><strong><%= @sender_name%></strong></p>
       
       <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
               
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= @t_direct_message['directmsg']%></p>
+      <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= @t_direct_message['directmsg']%></p>
 
     </div>
     <hr>
@@ -26,7 +26,7 @@
 
         <p class="style21"><%= @count += 1 %></p>
 
-        <p class="style22"><%= t_direct_thread['name']%></p>
+        <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
 
         <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
@@ -42,7 +42,7 @@
           <%= link_to "",  delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash'%>
         <% end %>
 
-        <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+        <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= t_direct_thread['directthreadmsg']%></p>
               
       <% end %>
     </div>
@@ -52,7 +52,7 @@
     <div class="textbox">
       <%= form_for(:session, url: directthreadmsg_path) do |f| %>
         <div class="col-md-11">
-          <%= f.text_field :message, class: 'form-control' %>
+          <%= f.text_area :message, class: 'form-control', rows:1, placeholder: "Type your message here..." %>
         </div>
         <div class="col-md-1">
           <%= f.submit "Send", class: "btn btn-primary" %>

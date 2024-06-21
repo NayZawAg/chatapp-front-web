@@ -13,6 +13,8 @@ class DirectMessageController < ApplicationController
 
     if session[:s_user_id].nil?
       redirect_to home_url
+    elsif params[:session][:message].blank?
+      redirect_to m_user_path(session[:s_user_id])
     else
       message = params[:session][:message]
       data = {
@@ -37,6 +39,8 @@ class DirectMessageController < ApplicationController
       end
     elsif session[:s_user_id].nil?
       redirect_to home_url
+    elsif params[:session][:message].blank?
+      redirect_to t_direct_message_path(session[:s_direct_message_id])    
     else
       data =  {
         "s_direct_message_id": session[:s_direct_message_id],

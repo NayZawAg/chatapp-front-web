@@ -17,7 +17,7 @@
       %>
       <% direct_messages_for_date.each do |t_direct_message| %>
         <p class="style21"><%= @count += 1 %></p>
-        <p class="style22"><%= t_direct_message['name'] %></p> 
+        <p class="style22"><strong><%= t_direct_message['name'] %></strong></p> 
 
         <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
@@ -32,7 +32,7 @@
           <%= link_to "", delete_directmsg_path(id: t_direct_message['id']),class: 'glyphicon glyphicon-trash' %>
         <% end %>
 
-        <p class="style3" style="word-wrap: break-word; width: 550px"> --> <%= t_direct_message['directmsg'] %></p>
+        <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px;"><%= t_direct_message['directmsg'] %></p>
         <hr>
         
       <% end %>

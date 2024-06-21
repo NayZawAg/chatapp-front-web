@@ -9,11 +9,11 @@
 
     <p class="style21">1</p>
 
-    <p class="style22"><%= @send_user['name']%></p>
+    <p class="style22"><strong><%= @send_user['name']%></strong></p>
     
     <p class="style23"><%= @t_group_message['created_at'].to_time.strftime("%F") %>/<%= @t_group_message['created_at'].to_time.strftime("%I:%M%p") %></p>
             
-    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= @t_group_message['groupmsg']%></p>
+    <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= @t_group_message['groupmsg']%></p>
   </div>
 
   <hr>
@@ -27,7 +27,7 @@
 
       <p class="style21"><%= @count += 1 %></p>
 
-      <p class="style22"><%= t_group_thread['name']%></p>
+      <p class="style22"><strong><%= t_group_thread['name']%></strong></p>
 
       <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
@@ -42,7 +42,7 @@
       <% if session[:current_user_id] == t_group_thread["send_user_id"] %>
         <%= link_to "",  delete_groupthread_path(:id => t_group_thread['id']), class:'glyphicon glyphicon-trash'%>
       <% end %>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_thread['groupthreadmsg']%></p>
+      <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= t_group_thread['groupthreadmsg']%></p>
             
     <% end %>
   </div>
@@ -53,8 +53,8 @@
     <% if @m_channelsids.include?session[:s_channel_id].to_i%>
       <%= form_for(:session, url: groupthreadmsg_path) do |f| %>
         <div class="col-md-11">
-          <%= f.text_field :message, class: 'form-control', data: { autocomplete_source: @m_channel_users.map { |t| 
-          { :label => '@' + t['name']} } }, id: 'tags' %>
+          <%= f.text_area :message, class: 'form-control', data: { autocomplete_source: @m_channel_users.map { |t| 
+          { :label => '@' + t['name']} } }, id: 'tags', rows:1, placeholder: "Type your message here..." %>
         </div>
         <div class="col-md-1">
           <%= f.submit "Send", class: "btn btn-primary" %>

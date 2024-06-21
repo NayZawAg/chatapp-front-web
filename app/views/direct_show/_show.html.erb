@@ -7,7 +7,7 @@
     <div class="textbox">
       <%= form_for(:session, url: directmsg_path) do |f| %>
         <div class="col-md-11">
-          <%= f.text_field :message, class: 'form-control' %>
+          <%= f.text_area :message, class: 'form-control', rows: 1, placeholder: "Type your message here..." %>
         </div>
         <div class="col-md-1">
           <%= f.submit "Send", class: "btn btn-primary"%>

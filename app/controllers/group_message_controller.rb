@@ -6,6 +6,8 @@ class GroupMessageController < ApplicationController
 
     if session[:s_channel_id].nil?
       redirect_to home_url
+    elsif params[:session][:message].blank?
+      redirect_to m_channel_path(session[:s_channel_id])
     else
       message = params[:session][:message]
       mention_name =params[:session][:memtion_name] 
@@ -27,6 +29,8 @@ class GroupMessageController < ApplicationController
       end
     elsif session[:s_channel_id].nil?
       redirect_to home_url
+    elsif params[:session][:message].blank?
+      redirect_to t_group_message_path(session[:s_group_message_id])
     else
       message = params[:session][:message]
       memtion_name = params[:session][:memtion_name] 
