@@ -37,7 +37,7 @@
           <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s %>
             <p class="style21"><%= @count += 1 %></p>
 
-            <p class="style22"><%= t_group_message['name']%></p>
+            <p class="style22"><strong><%= t_group_message['name']%></strong></p>
 
             <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
@@ -52,7 +52,7 @@
             <% if  session[:current_user_id] == t_group_message["send_user_id"] %>
               <%= link_to "",  delete_groupmsg_path(:id => t_group_message['id']), class:'glyphicon glyphicon-trash'%>
             <% end %>
-            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_message['groupmsg']%></p>
+            <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= t_group_message['groupmsg']%></p>
             <hr>
           <% end %>
         <% end %>
