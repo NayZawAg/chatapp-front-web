@@ -129,4 +129,33 @@ class MUsersController < ApplicationController
     #call from ApplicationController for retrieve home data
     retrievehome
   end
+
+  def edituser
+    retrievehome
+  end
+
+  def updateuser
+    retrievehome
+    data = {
+      "username": params[:m_user][:username]
+    }
+    connection = Faraday.new(url: 'http://localhost:3000/') do |faraday|
+      faraday.request :url_encoded
+      faraday.response :logger
+      faraday.adapter Faraday.default_adapter
+      faraday.request :authorization, 'Bearer', -> { auth_token }
+    end
+    response = connection.patch("m_users/edit_username", data)
+    responseData = JSON.parse(response.body)
+    if response.status == 200
+      flash[:success] = 'User name has been successfully changed'
+      # update user name in session
+      session[:m_user] = params[:m_user][:username]
+
+      redirect_to home_path
+    else
+      flash[:danger] =  ".User name "+responseData["error_message"]["name"].join(" and ")
+      render :edituser, status: :unprocessable_entity
+    end
+  end
 end

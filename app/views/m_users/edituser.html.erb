@@ -1,0 +1,29 @@
+<div id="main">
+  <% provide(:title, "Edit User Name") %>
+  <div class="container para">
+    <div class="col-md-6 col-md-offset-4">
+      <h1>Edit User Name</h1>
+      <br>
+      <%= form_for @m_usering, url: { controller: "m_users", action: "updateuser", id: session[:current_user_id] }, method: :patch do |f| %>
+        <%= render 'shared/error_messages', object: f.object %>
+        <%= f.label :email %>
+        <div>
+          <%= @m_usering.email %>
+        </div>
+        <br>
+        <%= f.label :workspacename %>
+        <div>
+          <%= @workspace_name %>
+        </div>
+        <br>
+        <%= f.label :name %>
+        <%= f.text_field :username, class: 'form-control' , value: @m_user %>
+        <%= f.submit "Update", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div>
+  <%= render 'leftpanel/leftpanel' %>
+</div>
+

@@ -69,6 +69,10 @@ Rails.application.routes.draw do
 
   delete 'logout' =>  'sessions#destroy'
 
+  # edit username
+  get 'useredit' => 'm_users#edituser'
+  patch 'useredit' => 'm_users#updateuser'
+
   resources :m_workspaces
   resources :m_users
   resources :m_channels
