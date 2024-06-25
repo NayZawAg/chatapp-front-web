@@ -19,9 +19,9 @@
 			<p class="style24"></p> 
 							
 			<% if @t_group_star_msgids.include? t_group_message['id'] %>
-					<%= link_to "",  "", class:'fas fa-star'%>
+				<%= link_to "",  "", class:'fas fa-star'%>
 			<% else %>
-					<%= link_to "",  "", class:'far fa-star'%>
+				<%= link_to "",  "", class:'far fa-star'%>
 			<% end %>
 							
 			<div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_group_message['groupmsg'])%></div>
