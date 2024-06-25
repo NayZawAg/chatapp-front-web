@@ -6,6 +6,8 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%= javascript_include_tag 'application' %>
+
     <%= render 'layouts/rails_default' %>
     <%= render 'layouts/shim' %>
 
@@ -16,7 +18,7 @@
 
       $(document).ready(function () {
           // will call refreshPartial every 3 seconds
-          yourInterval = setInterval(refreshPartial, 3000)
+          // yourInterval = setInterval(refreshPartial, 3000)
       });
 
       // calls action refreshing the partial
