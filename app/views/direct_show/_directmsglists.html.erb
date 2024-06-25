@@ -29,14 +29,14 @@
           <%= link_to "", star_path(id: t_direct_message['id']), class: 'far fa-star' %>
         <% end %>
         <% if session[:m_user] == t_direct_message['name'] %>
-          <%= link_to "", delete_directmsg_path(id: t_direct_message['id']),class: 'glyphicon glyphicon-trash' %>
+          <%= link_to "", delete_directmsg_path(id: t_direct_message['id']), class: 'glyphicon glyphicon-trash' %>
         <% end %>
-
-        <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px;"><%= t_direct_message['directmsg'] %></p>
+        <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= render_html(t_direct_message['directmsg']) %></div>
         <hr>
         
       <% end %>
     <% end %>
+
   </div>
 </div>
 

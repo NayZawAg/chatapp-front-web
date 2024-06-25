@@ -155,16 +155,6 @@ input {
   height: auto !important;
 }
 
-.textbox{
-  margin-left:260px;
-  position: fixed;
-  bottom: 0;
-  width: 80%;
-  color: white;
-  text-align: center;
-  margin-bottom: 2px;
-}
-
 .messagepannel{
   margin-bottom: 80px;
 }
@@ -510,15 +500,15 @@ div.textboxbg{
   text-align: center;
   bottom: 0;
   position: fixed;
-  background-color: #F4F4F4;
-  border: #F4F4F4 solid 2px;
+  // background-color: #F4F4F4;
+  // border: #F4F4F4 solid 2px;
   width: 100%;
-  height: 70px;
+  height: 100px;
 }
 
 /* forms */
 .txtmsg{
-  margin-bottom: 70px;
+  margin-bottom: 110px;
 }
 
 #cuserlist{
@@ -544,8 +534,120 @@ div.textboxbg{
   background-size: cover;
 }
 
+// new style added no.15
+
+.textboxeditor{
+  position: fixed;
+  bottom: 0;
+  width: 80%;
+  background-color: white;
+  color: black;
+  text-align: start;
+  border: 1px solid grey;
+  border-radius: 10px;
+  margin-left:260px;
+  margin-bottom: 2px;
+}
+
+.icon{
+  font-size: 15px;
+  padding-left: 20px;
+  display: inline-block;
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.togglebtn{
+  background-color: white;
+  padding:0 0 0 10px;
+  border:0;
+}
+
+#toolbar{
+  border:none;
+  border-radius:10px 10px 0 0;
+  background-color: #e1e1e130;
+  // margin-bottom: 10px;
+}
+
+#editor{
+  border:none;
+  padding:0;
+  margin:0;
+}
+
+// link dialog 
+#link-dialog {
+  width: 30%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000;
+}
 
 
+#link-dialog input {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
 
+#link-dialog button {
+  margin-top:20px;
+  margin-right: 10px;
+  padding: 5px 10px;
+  border:1px solid #ccc;
+  border-radius: 5px;
+}
 
+.highlight {
+  font-family:monospace;
+  font-size: 12px;
+  color:red;
+  border:0.7px solid #ccc;
+  border-radius: 3px;
+  padding:3px;
+}
 
+.codeblock {
+  display: inline-block;
+  font-family:monospace;
+  font-size: 13px;
+  width: 100%;
+  border:0.7px solid #ccc;
+  border-radius: 5px;
+  padding:8px;
+  background-color: rgb(228, 228, 228);
+}
+
+.btn-icon{
+  font-size: 13px;
+}
+
+.btn-icon.active {
+  color: rgb(67, 67, 255); /* Color when active (highlighted) */
+}
+
+.mt-10{
+  margin-top:10px ;
+}
+
+.test{
+  background-color: red;
+
+}

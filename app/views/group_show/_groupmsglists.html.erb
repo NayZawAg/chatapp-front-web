@@ -52,7 +52,7 @@
             <% if  session[:current_user_id] == t_group_message["send_user_id"] %>
               <%= link_to "",  delete_groupmsg_path(:id => t_group_message['id']), class:'glyphicon glyphicon-trash'%>
             <% end %>
-            <p class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"><%= t_group_message['groupmsg']%></p>
+           <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px">  <%= render_html(t_group_message['groupmsg'])%></div>
             <hr>
           <% end %>
         <% end %>

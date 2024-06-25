@@ -12,7 +12,7 @@
       <p class="style23"><%= (direct_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= direct_star['directmsg'] %></p>
+      <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(direct_star['directmsg']) %></div>
       <hr>
     <% end %>
   </div>
@@ -26,7 +26,7 @@
       <p class="style23"><%= (direct_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= direct_star_thread['directthreadmsg'] %></p>
+      <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(direct_star_thread['directthreadmsg']) %></div>
       <hr>
     <% end %>
   </div>
@@ -41,7 +41,7 @@
       <p class="style23"><%= (group_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> --> <span><%= group_star['groupmsg'] %></span></p>
+      <div class="style3" style="word-wrap: break-word; width: 550px"> <span><%= render_html(group_star['groupmsg']) %></span></div>
       <hr>
     <% end %>
   </div>
@@ -56,7 +56,7 @@
       <p class="style23"><%= (group_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= group_star_thread['groupthreadmsg'] %></p>
+      <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(group_star_thread['groupthreadmsg']) %></div>
       <hr>
     <% end %>
   </div>

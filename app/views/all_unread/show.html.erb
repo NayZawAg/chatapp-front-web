@@ -15,7 +15,7 @@
       
       <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
               
-      <p class="style3"> -->  <%= t_direct_message['directmsg']%></p>
+      <div class="style3"> <%= render_html(t_direct_message['directmsg'])%></div>
       <hr>
     <% end %>
   </div>
@@ -31,7 +31,7 @@
 
       <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-      <p class="style3"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+      <div class="style3">  <%= render_html(t_direct_thread['directthreadmsg'])%></div>
       <hr>
     <% end %>
   </div>
@@ -52,7 +52,7 @@
 
           <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-          <p class="style3"> -->  <%= t_group_message['groupmsg']%></p>
+          <div class="style3">   <%= render_html(t_group_message['groupmsg'])%></div>
 
           <p class="style24"></p>
         <% end %>
@@ -75,7 +75,7 @@
           <p class="style22"><%= t_group_thread['name']%></p>
 
           <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-          <p class="style3"> -->  <%= t_group_thread['groupthreadmsg']%></p>
+          <div class="style3"> -->  <%= render_html(t_group_thread['groupthreadmsg'])%></div>
           <p class="style24"></p>
         <% end %>
       <% end %>

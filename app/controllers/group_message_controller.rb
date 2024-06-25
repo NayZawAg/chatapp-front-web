@@ -38,7 +38,7 @@ class GroupMessageController < ApplicationController
         "s_group_message_id": session[:s_group_message_id],
         "s_channel_id": session[:s_channel_id],
         "message": message,
-        "memtion_name": [memtion_name]
+        "mention_name": [memtion_name]
        
       };
       post_data("/groupthreadmsg", data)
