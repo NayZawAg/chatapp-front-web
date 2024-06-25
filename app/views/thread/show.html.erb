@@ -39,9 +39,9 @@
             <p class="style24"></p> 
             
             <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
-                      <%= link_to "", "", class:'fas fa-star' %></li>
+              <%= link_to "", "", class:'fas fa-star' %></li>
             <% else %>
-                      <%= link_to "",  "", class:'far fa-star' %></li>
+              <%= link_to "",  "", class:'far fa-star' %></li>
             <% end %> 
 
             <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_direct_thread['directthreadmsg'])%></div>
