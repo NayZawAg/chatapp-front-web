@@ -35,7 +35,7 @@
     <% end %>
     <div>
       <div class="col-md-4" id="cuserlist">
-          <p class="style21">番号 </p>
+        <p class="style21">番号 </p>
       </div>
 
       <div class="col-md-2" >
@@ -66,7 +66,7 @@
         <div class="col-md-3">
           <% if session[:current_user_id] == @created_admin[0]['userid'] %>
             <% if c_user['created_admin'] == false and @m_channelsids.include?session[:s_channel_id].to_i %>
-                <p class="style24" ><%= link_to "Remove", channeluserdestroy_path(id: c_user['id'])%></p>
+              <p class="style24" ><%= link_to "Remove", channeluserdestroy_path(id: c_user['id'])%></p>
             <% end %>
           <% else %>
           <% end %>

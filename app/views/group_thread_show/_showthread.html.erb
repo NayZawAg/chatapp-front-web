@@ -23,7 +23,6 @@
     <hr>
     
     <% @t_group_threads.each do |t_group_thread| %>
-
       <p class="style21"><%= @count += 1 %></p>
 
       <p class="style22"><strong><%= t_group_thread['name']%></strong></p>
@@ -166,7 +165,6 @@
 			theme: 'snow'
     });
 
-
     // highlight start
     var isHighlighting = false;
 
@@ -217,7 +215,6 @@
     var isCodeblocking = false;
 
     function updateCodeBtn() {
-      
       if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
