@@ -75,7 +75,7 @@
   HighlightBlot.tagName = 'span';
   Quill.register(HighlightBlot);
 
-//code block
+  // code block
   var Block = Quill.import('blots/inline');
   class CodeBlot extends Block {
     static create(value) {
@@ -93,7 +93,7 @@
   CodeBlot.tagName = 'span';
   Quill.register(CodeBlot);
 
-  //call quill
+  // call quill
   document.addEventListener("DOMContentLoaded", function() {
     const toolbarOptions = [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -102,7 +102,7 @@
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote', 'code-block'],
     ];
-  
+
     const quill = new Quill('#editor', {
       modules: {
         toolbar: {
@@ -146,22 +146,20 @@
       quill.focus();
     }
 
-
     quill.on('text-change', function() {
       var format = quill.getFormat();
         isHighlighting = !!format.highlight;
         updateButtonText();
     });
 
-
-    document.querySelector('#highlight-text').addEventListener('click', function() {     
-        if(!isCodeblocking) {
-          toggleHighlight();
-        } else {
-          quill.focus();
-        }
-        var htmlContent = quill.root.innerHTML;
-        document.querySelector('#quill-content').value = htmlContent;
+    document.querySelector('#highlight-text').addEventListener('click', function() {
+      if(!isCodeblocking) {
+        toggleHighlight();
+      } else {
+        quill.focus();
+      }
+      var htmlContent = quill.root.innerHTML;
+      document.querySelector('#quill-content').value = htmlContent;
     });
 
     updateButtonText();
@@ -196,14 +194,12 @@
       quill.focus();
     }
 
-
     quill.on('text-change', function() {
       var format = quill.getFormat();
         isCodeblocking = !!format.codeblock;
         updateCodeBtn();
         // checkHighlightStatus();
     });
-
 
     document.querySelector('#code-block').addEventListener('click', function() {
       if(!isHighlighting) {
@@ -230,19 +226,19 @@
 
     // for link dialog 
     var range = quill.getSelection();
-      quill.on('selection-change', function(range, oldRange, source) {
-        if (range && range.length > 0) {
-          var selectedText = quill.getText(range.index, range.length);
+    quill.on('selection-change', function(range, oldRange, source) {
+      if (range && range.length > 0) {
+        var selectedText = quill.getText(range.index, range.length);
 
-          if(selectedText){
-            $('#toolbar').removeClass("hidden");
-          }
+        if(selectedText){
+          $('#toolbar').removeClass("hidden");
+        }
 
-          $('#link-name').val(selectedText);
-          console.log(selectedText)
+        $('#link-name').val(selectedText);
+        console.log(selectedText)
 
-        } 
-      });
+      } 
+    });
 
     function showLinkDialog(range) {
       document.getElementById('link-dialog').style.display = 'block';
@@ -258,7 +254,6 @@
           quill.setSelection(range.index + linkText.length, 0);
           hideLinkDialog();
         }
-
       };
 
       document.getElementById('link-cancel').onclick = function() {
@@ -292,7 +287,6 @@
       document.querySelector('#quill-content').value = htmlContent;
     }
 
-
     // for mention select 
     $( "#editor" ).autocomplete({
         source: $('#editor').data('autocomplete-source'),
@@ -325,7 +319,7 @@
       clearInterval(yourInterval);
     });
 
-    //validate btn
+    // validate btn
     var sendbtn = document.querySelector(".sendbtn");
     sendbtn.disabled = true;
     quill.on('text-change', function(delta, oldDelta, source) {

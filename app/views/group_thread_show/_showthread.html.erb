@@ -119,7 +119,7 @@
   HighlightBlot.tagName = 'span';
   Quill.register(HighlightBlot);
 
-  //code block
+  // code block
   var Block = Quill.import('blots/inline');
   class CodeBlot extends Block {
     static create(value) {
@@ -146,7 +146,7 @@
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote'],
     ];
-    
+
 		const quill = new Quill('#editor', {
 			modules: {
         toolbar: {
@@ -190,7 +190,6 @@
       quill.focus();
     }
 
-
     quill.on('text-change', function() {
       var format = quill.getFormat();
       isHighlighting = !!format.highlight;
@@ -209,7 +208,7 @@
     });
 
     updateButtonText();
-    //highlight end 
+    // highlight end 
 
     // codeblock start 
     var isCodeblocking = false;
@@ -244,7 +243,6 @@
       isCodeblocking = !!format.codeblock;
       updateCodeBtn();
     });
-
 
     document.querySelector('#code-block').addEventListener('click', function() {
       if (!isHighlighting) {
@@ -368,7 +366,7 @@
       clearInterval(yourInterval);
     });
 
-    //validate btn
+    // validate btn
     var sendbtn = document.querySelector(".sendbtn");
     sendbtn.disabled = true;
     quill.on('text-change', function(delta, oldDelta, source) {
