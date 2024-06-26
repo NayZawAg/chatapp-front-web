@@ -74,7 +74,7 @@
           <%= f.hidden_field :message, id: 'quill-content' %>
         </div>
         <div class="col-md-1 mt-10">
-          <%= f.submit "Send", class: "btn btn-primary" %>
+          <%= f.submit "Send", class: "btn btn-primary sendbtn" %>
         </div>
       <% end %>
 
@@ -323,6 +323,18 @@
       var htmlContent = quill.getSemanticHTML();
       document.querySelector('#quill-content').value = htmlContent;
     }
+
+    //validate btn
+    var sendbtn = document.querySelector(".sendbtn");
+    sendbtn.disabled = true;
+    quill.on('text-change', function(delta, oldDelta, source) {
+      const editorContent = quill.getText().trim();
+      if (editorContent.length > 0) {
+        sendbtn.disabled = false;
+      } else {
+        sendbtn.disabled = true;
+      }
+    });
 
   });
 

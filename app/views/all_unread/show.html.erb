@@ -75,7 +75,7 @@
           <p class="style22"><%= t_group_thread['name']%></p>
 
           <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-          <div class="style3"> -->  <%= render_html(t_group_thread['groupthreadmsg'])%></div>
+          <div class="style3">  <%= render_html(t_group_thread['groupthreadmsg'])%></div>
           <p class="style24"></p>
         <% end %>
       <% end %>

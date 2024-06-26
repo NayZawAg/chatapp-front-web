@@ -651,3 +651,7 @@ div.textboxbg{
   background-color: red;
 
 }
+
+.ql-editor.ql-blank:focus::before {
+  content: '';
+}

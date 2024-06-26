@@ -42,10 +42,16 @@ class MUsersController < ApplicationController
   def update
     #check unlogin user
     # checkuser
-
+    old_password = params[:m_user][:old_password]
     password = params[:m_user][:password]
     password_confirmation = params[:m_user][:password_confirmation]
-
+    data = {
+      "m_user": {
+      "old_password": old_password,
+      "password": password,
+      "password_confirmation": password_confirmation
+      }
+    }
     if password == "" || password.nil?
       flash[:danger] = "Password can't be blank."
       redirect_to change_password_url(id: session[:current_user_id])
@@ -55,17 +61,31 @@ class MUsersController < ApplicationController
     elsif password != password_confirmation
       flash[:danger] = "Password and Confirmation Password does not match."
       redirect_to change_password_url(id: session[:current_user_id])
-    else 
-      data = {
-        "password": password,
-        "password_confirmation": password_confirmation
-      }
-      
-      put_data("/m_users/#{session[:current_user_id]}", {m_user: data})
-      flash[:success] = "Change Password Successful."
-      redirect_to home_url
+    else
+      connection = Faraday.new(url: 'http://localhost:3000/') do |faraday|
+        faraday.request :url_encoded
+        faraday.response :logger
+        faraday.adapter Faraday.default_adapter
+        faraday.request :authorization, 'Bearer', -> { auth_token }
+      end
+      response = connection.put("m_users/#{session[:current_user_id]}", data)
+      response_data = JSON.parse(response.body)
+      if response.status == 200 &&  response_data["error"].nil?
+        flash[:success] = 'password has been successfully changed.'
+        redirect_to home_path
+      else
+        flash[:danger] =  response_data["error"]
+        redirect_to change_password_url(id: session[:current_user_id])
+      end
     end
   end
+
+
+
+
+
+
+
 
   def confirm
     #check login user
