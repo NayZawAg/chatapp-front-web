@@ -96,12 +96,12 @@
   //call quill
   document.addEventListener("DOMContentLoaded", function() {
     const toolbarOptions = [
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            ['bold', 'italic', 'strike'],
-                            ['link'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['blockquote', 'code-block'],
-                          ];
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'strike'],
+      ['link'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['blockquote', 'code-block'],
+    ];
   
     const quill = new Quill('#editor', {
       modules: {
