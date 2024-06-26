@@ -27,15 +27,13 @@
         </div>
             
         <%= form_for(:session, url: directmsg_path) do |f| %>
-      
           <div class="col-md-11">                  
             <div id="editor"></div>  
             <%= f.hidden_field :message, id: 'quill-content' %>  
           </div>
           <div class="col-md-1 mt-10">
-            <%= f.submit "Send", class: "btn btn-primary"%>
+            <%= f.submit "Send", class: "btn btn-primary sendbtn"%>
           </div>
-        
         <% end %>
     
         <div class="col-md-11">
@@ -90,16 +88,15 @@
   CodeBlot.tagName = 'span';
   Quill.register(CodeBlot);
 
-
   //call quill
   document.addEventListener("DOMContentLoaded", function() {
     const toolbarOptions = [
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            ['bold', 'italic', 'strike'],
-                            ['link'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['blockquote'],
-                           ];
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'strike'],
+      ['link'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['blockquote'],
+    ];
   
     const quill = new Quill('#editor', {
       modules: {
@@ -124,7 +121,7 @@
 
     function updateButtonText() {
        
-      if(isHighlighting){
+      if(isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -134,16 +131,15 @@
     function toggleHighlight() {
       var format = quill.getFormat();
       if (format.highlight) {
-          quill.format('highlight', false);
-          isHighlighting = false;
+        quill.format('highlight', false);
+        isHighlighting = false;
       } else {
-          quill.format('highlight', true);
-          isHighlighting = true;
+        quill.format('highlight', true);
+        isHighlighting = true;
       }
       updateButtonText();
       quill.focus();
     }
-
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
@@ -151,11 +147,10 @@
         updateButtonText();
     });
 
-
     document.querySelector('#highlight-text').addEventListener('click', function() {     
-      if(!isCodeblocking){
-          toggleHighlight();
-      }else{
+      if(!isCodeblocking) {
+        toggleHighlight();
+      } else {
         quill.focus();
       }
       var htmlContent = quill.getSemanticHTML();
@@ -163,7 +158,7 @@
     });
 
     updateButtonText();
-    //highlight end 
+    // highlight end 
 
     // codeblock start 
     var isCodeblocking = false;
@@ -199,11 +194,10 @@
         updateCodeBtn();
     });
 
-
     document.querySelector('#code-block').addEventListener('click', function() {
-      if(!isHighlighting){
+      if(!isHighlighting) {
         toggleCodeblock();
-      }else{
+      } else {
         quill.focus();
       }
       var htmlContent = quill.getSemanticHTML();
@@ -272,7 +266,7 @@
       event.stopPropagation();
     });
 
-  // for toggle toolbar 
+    // for toggle toolbar 
     const toolbar = quill.getModule('toolbar');
     const toolbarui = document.getElementById('toolbar');
     const toggleButton = document.getElementById('toggle-toolbar');
@@ -281,12 +275,24 @@
       toolbarui.classList.toggle('hidden');
     });
 
-  // get value 
+    // get value 
     var form = document.querySelector('form');
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
       document.querySelector('#quill-content').value = htmlContent;
     }
+
+    // validate btn
+    var sendbtn = document.querySelector(".sendbtn");
+    sendbtn.disabled = true;
+    quill.on('text-change', function(delta, oldDelta, source) {
+      const editorContent = quill.getText().trim();
+      if (editorContent.length > 0) {
+        sendbtn.disabled = false;
+      } else {
+        sendbtn.disabled = true;
+      }
+    });
 
   });
 

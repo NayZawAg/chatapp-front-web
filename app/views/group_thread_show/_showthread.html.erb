@@ -23,7 +23,6 @@
     <hr>
     
     <% @t_group_threads.each do |t_group_thread| %>
-
       <p class="style21"><%= @count += 1 %></p>
 
       <p class="style22"><strong><%= t_group_thread['name']%></strong></p>
@@ -77,7 +76,7 @@
           <%= f.hidden_field :message, id: 'quill-content' %>             
         </div>
         <div class="col-md-1 mt-10">
-          <%= f.submit "Send", class: "btn btn-primary" %>
+          <%= f.submit "Send", class: "btn btn-primary sendbtn" %>
         </div>
         <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
       <% end %>
@@ -120,7 +119,7 @@
   HighlightBlot.tagName = 'span';
   Quill.register(HighlightBlot);
 
-  //code block
+  // code block
   var Block = Quill.import('blots/inline');
   class CodeBlot extends Block {
     static create(value) {
@@ -141,13 +140,13 @@
   // call quill
 	document.addEventListener("DOMContentLoaded", function() {
 	  const toolbarOptions = [
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            ['bold', 'italic', 'strike'],
-                            ['link'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['blockquote'],
-                          ];
-    
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'strike'],
+      ['link'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['blockquote'],
+    ];
+
 		const quill = new Quill('#editor', {
 			modules: {
         toolbar: {
@@ -165,7 +164,6 @@
       placeholder: 'Type your message here ...',
 			theme: 'snow'
     });
-
 
     // highlight start
     var isHighlighting = false;
@@ -192,7 +190,6 @@
       quill.focus();
     }
 
-
     quill.on('text-change', function() {
       var format = quill.getFormat();
       isHighlighting = !!format.highlight;
@@ -211,13 +208,12 @@
     });
 
     updateButtonText();
-    //highlight end 
+    // highlight end 
 
     // codeblock start 
     var isCodeblocking = false;
 
     function updateCodeBtn() {
-      
       if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
@@ -247,7 +243,6 @@
       isCodeblocking = !!format.codeblock;
       updateCodeBtn();
     });
-
 
     document.querySelector('#code-block').addEventListener('click', function() {
       if (!isHighlighting) {
@@ -369,6 +364,18 @@
     
     $('#stop').click(function() {
       clearInterval(yourInterval);
+    });
+
+    // validate btn
+    var sendbtn = document.querySelector(".sendbtn");
+    sendbtn.disabled = true;
+    quill.on('text-change', function(delta, oldDelta, source) {
+      const editorContent = quill.getText().trim();
+      if (editorContent.length > 0) {
+        sendbtn.disabled = false;
+      } else {
+        sendbtn.disabled = true;
+      }
     });
 
   });

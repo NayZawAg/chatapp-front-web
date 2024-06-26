@@ -1,6 +1,6 @@
 <% provide(:title, 'Thread') %>
 <div id="main">
-<h1>Thread Lists</h1>
+  <h1>Thread Lists</h1>
   <div>
     <h2 class="style1">Direct Thread</h1>
     <% @t_direct_messages.each do |t_direct_message| %>
@@ -47,7 +47,7 @@
             <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_direct_thread['directthreadmsg'])%></div>
           <% end %>
         <% end %>
-          <hr>
+        <hr>
       <% end %>
   </div>
 
