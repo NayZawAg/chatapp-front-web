@@ -26,15 +26,15 @@
           <button id="link-save">Yes</button>
         </div>
             
-        <%= form_for(:session, url: directmsg_path) do |f| %>
-          <div class="col-md-11">                  
-            <div id="editor"></div>  
-            <%= f.hidden_field :message, id: 'quill-content' %>  
-          </div>
-          <div class="col-md-1 mt-10">
-            <%= f.submit "Send", class: "btn btn-primary sendbtn"%>
-          </div>
-        <% end %>
+          <%= form_for(:session, url: directmsg_path) do |f| %>
+            <div class="col-md-11">
+              <div id="editor"></div>
+              <%= f.hidden_field :message, id: 'quill-content' %>
+            </div>
+            <div class="col-md-1 mt-10">
+              <%= f.submit "Send", class: "btn btn-primary sendbtn"%>
+            </div>
+          <% end %>
     
         <div class="col-md-11">
           <span><i class="fas fa-plus"></i></span>
@@ -225,11 +225,9 @@
 
         if(selectedText){
           $('#toolbar').removeClass("hidden");
-        console.log("done")
         }
 
         $('#link-name').val(selectedText);
-        console.log(selectedText)
       } 
     });
 
@@ -279,7 +277,9 @@
     var form = document.querySelector('form');
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
-      document.querySelector('#quill-content').value = htmlContent;
+      var quillContent = document.querySelector('#quill-content');
+      htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
+      quillContent.value = htmlContent;
     }
 
     // validate btn
@@ -293,7 +293,7 @@
         sendbtn.disabled = true;
       }
     });
-
+   
   });
 
 </script>

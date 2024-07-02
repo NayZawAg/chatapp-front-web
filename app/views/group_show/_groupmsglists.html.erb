@@ -12,7 +12,7 @@
           <% if session[:current_user_id] == @created_admin[0]['userid'] %>
             <span>
               <button type="button" class="btn btn-default btn-sm" style='font-size:15px; background-color: #F4F4F4'>
-                <%= link_to "Edit", channeledit_path(id: @s_channel['id'].to_i), class: 'fa fa-edit',  style: 'font-size:15px; color: black;'%> 
+                <%= link_to "Edit", channeledit_path(id: @s_channel['id'].to_i), class: 'fa fa-edit', style: 'font-size:15px; color: black;'%> 
               </button>
               
               <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" style='font-size:15px; background-color: #F4F4F4'>
@@ -28,7 +28,7 @@
       </h2>
     </div>
     <div class="style1" style="padding-top: 80px">
-      <%= link_to "Load Mode",  refresh_group_url , class:'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;'%>
+      <%= link_to "Load Mode", refresh_group_url , class:'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;'%>
     </div>
     <% @t_group_message_dates.each do |t_group_message_date| %>
       <% if @t_group_message_datesize.include?t_group_message_date['created_date'] %>
@@ -41,18 +41,24 @@
 
             <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-            <p class="style24"><%= link_to t_group_message['count'],  t_group_message_path(id: t_group_message['id']), class: 'fab fa-facebook-messenger'%></p>
+            <p class="style24"><%= link_to t_group_message['count'], t_group_message_path(id: t_group_message['id']), class: 'fab fa-facebook-messenger'%></p>
+
+            <% if session[:current_user_id] == t_group_message['send_user_id'] %>
+              <p class="style22">
+                <%= link_to "", edit_groupmsg_path(id: t_group_message['id']), class: 'far fa-edit', id: 'editbtn'%>
+              </p>
+            <% end %>
 
             <% if @t_group_star_msgids.include? t_group_message['id'] %>
-              <%= link_to "",  groupunstar_path(:id => t_group_message['id']), class:'fas fa-star' %>
+              <%= link_to "", groupunstar_path(:id => t_group_message['id']), class:'fas fa-star' %>
             <% else %>
-              <%= link_to "",  groupstar_path(:id => t_group_message['id']), class:'far fa-star'%>
+              <%= link_to "", groupstar_path(:id => t_group_message['id']), class:'far fa-star'%>
             <% end %>
 
-            <% if  session[:current_user_id] == t_group_message["send_user_id"] %>
-              <%= link_to "",  delete_groupmsg_path(:id => t_group_message['id']), class:'glyphicon glyphicon-trash'%>
+            <% if session[:current_user_id] == t_group_message["send_user_id"] %>
+              <%= link_to "", delete_groupmsg_path(:id => t_group_message['id']), class:'glyphicon glyphicon-trash'%>
             <% end %>
-           <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px">  <%= render_html(t_group_message['groupmsg'])%></div>
+            <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_group_message['groupmsg'])%></div>
             <hr>
           <% end %>
         <% end %>
@@ -76,7 +82,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-info btn-sm" style='font-size:15px;'>
-          <%= link_to "Delete", delete_channel_path(id: @s_channel['id'].to_i), class: 'glyphicon glyphicon-trash',  style: 'font-size:15px; color: white;'%>
+          <%= link_to "Delete", delete_channel_path(id: @s_channel['id'].to_i), class: 'glyphicon glyphicon-trash', style: 'font-size:15px; color: white;'%>
         </button>
       </div>
     </div>

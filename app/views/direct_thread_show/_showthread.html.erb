@@ -7,25 +7,32 @@
     <hr>
     <p class="style21">1</p>
     <p class="style22"><strong><%= @sender_name%></strong></p>
-    <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>     
+    <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
     <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(@t_direct_message['directmsg'])%></div>
   </div>
   <hr>
   <div class="txtmsg">
     <% @count = 0 %>
     <h2 class="style1">Reply</h2>
-    <hr>   
+    <hr>
     <% @t_direct_threads.each do |t_direct_thread| %>
       <p class="style21"><%= @count += 1 %></p>
       <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
       <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p>   
+      <p class="style24"></p> 
+      <% if session[:m_user] == t_direct_thread['name'] %>
+        <p class="style22">
+					<%= link_to "", edit_directthreadmsg_path(id: t_direct_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
+        </p>
+      <% end %>
       <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
         <%= link_to "", unstarthread_path(:id => t_direct_thread['id']), class:'fas fa-star' %></li>
       <% else %>
-        <%= link_to "",  starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
-      <% end %>       
-      <%= link_to "",  delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash'%>
+        <%= link_to "", starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
+      <% end %>
+      <% if session[:m_user] == t_direct_thread['name'] %>
+        <%= link_to "", delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash' %>
+      <% end %>
       <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread['directthreadmsg'])%></div>         
     <% end %>
   </div>
@@ -53,7 +60,7 @@
     </div>
     <%= form_for(:session, url: directthreadmsg_path) do |f| %>
       <div class="col-md-11">
-        <div id="editor"></div>  
+        <div id="editor"></div>
         <%= f.hidden_field :message, id: 'quill-content' %>
       </div>
       <div class="col-md-1 mt-10">
@@ -117,7 +124,7 @@
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote'],
     ];
-  
+
     const quill = new Quill('#editor', {
       modules: {
         toolbar: {
@@ -179,7 +186,7 @@
 
     // codeblock start 
     var isCodeblocking = false;
-    function updateCodeBtn() {     
+    function updateCodeBtn() {
       if(isCodeblocking){
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
@@ -231,7 +238,7 @@
         updateButtonText();
       }
     });
-        
+
     // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
@@ -241,7 +248,6 @@
           $('#toolbar').removeClass("hidden");
         }
         $('#link-name').val(selectedText);
-        console.log(selectedText)
       }
     });
 
@@ -288,7 +294,9 @@
     var form = document.querySelector('form');
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
-      document.querySelector('#quill-content').value = htmlContent;
+      var quillContent = document.querySelector('#quill-content');
+      htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
+      quillContent.value = htmlContent;
     }
 
     // validate btn

@@ -1,58 +1,58 @@
-
-<div id="main"> 
-  <%= render 'group_show/groupmsglists' %>
-  <div class = "textboxbg">
-    <div class="textboxeditor">
-
-      <div id="toolbar">
-        <button class="ql-bold disable"></button>
-        <button class="ql-italic disable"></button>
-        <button class="ql-strike disable"></button>
-        <button class="ql-link disable"></button>
-        <button class="ql-list" value="ordered"></button>
-        <button class="ql-list" value="bullet"></button>
-        <button class="ql-blockquote"></button>
-        <button id="code-block" class="btn-icon"><i class="fas fa-code"></i></button>
-        <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
-      </div>
-
-      <div id="link-dialog" style="display: none;">
-        <h3 id= "link-title">Add your link</h3>
-        <input type="text" id="link-name" placeholder="Enter link name">
-        <input type="text" id="link-url" placeholder="Enter URL">
-        <button id="link-cancel">Cancel</button>
-        <button id="link-save">Yes</button>
-      </div>
-
-      <% if @m_channelsids.include?session[:s_channel_id].to_i%>
-        <%= form_for(:session, url: groupmsg_path) do |f| %>
-          <div class="col-md-11">
-            <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
-            <%= f.hidden_field :message, id: 'quill-content' %>
-          </div>
-          <div class="col-md-1 mt-10">
-            <%= f.submit "Send", class: "btn btn-primary sendbtn"%>
-          </div>
-          <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
-        <% end %>
-      <% else %>
-        <div style="padding-bottom: 20px" >
-          <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: 'btn btn-primary'%>
+<div id="main">
+  <div class = "txtmsg">	
+    <% @count = 0 %>
+    <%= render 'direct_show/directmsglists' %>
+    <div class = "textboxbg">
+      <div class="textboxeditor">
+              
+        <div id="toolbar">
+          <button class="ql-bold disable"></button>
+          <button class="ql-italic disable"></button>
+          <button class="ql-strike disable"></button>
+          <button class="ql-link disable"></button>
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+          <button class="ql-blockquote"></button>
+          <button id="code-block" class="btn-icon"><i class="fas fa-code"></i></button>
+          <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
         </div>
-      <% end %>
 
-      <div class="col-md-11">
-        <span><i class="fas fa-plus"></i></span>
-        <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+        <div id="link-dialog" style="display: none;">
+          <h3 id= "link-title">Add your link</h3>
+          <input type="text" id="link-name" placeholder="Enter link name">
+          <input type="text" id="link-url" placeholder="Enter URL">
+          <button id="link-cancel">Cancel</button>
+          <button id="link-save">Yes</button>
+        </div>
+            
+        <div class="editmsg">
+          <%= form_for(:session, url: update_directmsg_path) do |f| %>
+            <div class="col-md-10">
+              <div id="editor"></div>
+                <%= f.hidden_field :message, id: 'quill-content' %>
+                <%= hidden_field_tag :id, params[:id] %>
+                <%= hidden_field_tag :action_type, '', id: 'action-type' %>
+            </div>
+            <div class="col-md-1 mt-10 arrange">
+              <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editsend"%>
+              <button class="btn btn-secondary editcancle">Cancle</button>
+            </div>
+          <% end %>
+
+        </div>
+
+        <div class="col-md-11">
+          <span><i class="fas fa-plus"></i></span>
+          <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+        </div>
       </div>
-
     </div>
   </div>
+</div>
 
 <div>
   <%= render 'leftpanel/leftpanel' %>
 </div>
-
 
 <script>
 
@@ -67,15 +67,16 @@
     }
 
     static formats(node) {
-      return node.getAttribute('class');
+      return node.classList.contains('highlight') ? 'highlight' : undefined;
     }
   }
 
   HighlightBlot.blotName = 'highlight';
   HighlightBlot.tagName = 'span';
+  HighlightBlot.className = 'highlight';
   Quill.register(HighlightBlot);
 
-  // code block
+  //code block
   var Block = Quill.import('blots/inline');
   class CodeBlot extends Block {
     static create(value) {
@@ -93,23 +94,23 @@
   CodeBlot.tagName = 'span';
   Quill.register(CodeBlot);
 
-  // call quill
+  //call quill
   document.addEventListener("DOMContentLoaded", function() {
     const toolbarOptions = [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       ['bold', 'italic', 'strike'],
       ['link'],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['blockquote', 'code-block'],
+      ['blockquote'],
     ];
-
+  
     const quill = new Quill('#editor', {
       modules: {
         toolbar: {
           container: '#toolbar',
           handlers: {
             link: function() {
-              const range = this.quill.getSelection();
+              const range = quill.getSelection();
               if (range) {
                 showLinkDialog(range);
               }
@@ -121,12 +122,12 @@
       theme: 'snow'
     });
 
+
     // highlight start
     var isHighlighting = false;
 
     function updateButtonText() {
-       
-      if(isHighlighting){
+      if(isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -136,11 +137,11 @@
     function toggleHighlight() {
       var format = quill.getFormat();
       if (format.highlight) {
-          quill.format('highlight', false);
-          isHighlighting = false;
+        quill.format('highlight', false);
+        isHighlighting = false;
       } else {
-          quill.format('highlight', true);
-          isHighlighting = true;
+        quill.format('highlight', true);
+        isHighlighting = true;
       }
       updateButtonText();
       quill.focus();
@@ -148,8 +149,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isHighlighting = !!format.highlight;
-        updateButtonText();
+      isHighlighting = !!format.highlight;
+      updateButtonText();
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
@@ -158,18 +159,17 @@
       } else {
         quill.focus();
       }
-      var htmlContent = quill.root.innerHTML;
+      var htmlContent = quill.getSemanticHTML();
       document.querySelector('#quill-content').value = htmlContent;
     });
 
     updateButtonText();
-    //highlight end 
+    // highlight end 
 
     // codeblock start 
     var isCodeblocking = false;
 
     function updateCodeBtn() {
-      
       if(isCodeblocking){
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
@@ -196,9 +196,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isCodeblocking = !!format.codeblock;
-        updateCodeBtn();
-        // checkHighlightStatus();
+      isCodeblocking = !!format.codeblock;
+      updateCodeBtn();
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
@@ -207,13 +206,13 @@
       } else {
         quill.focus();
       }
-      var htmlContent = quill.root.innerHTML;
+      var htmlContent = quill.getSemanticHTML();
       document.querySelector('#quill-content').value = htmlContent;
     });
 
     updateCodeBtn();
-    // codeblock end
-
+    // codeblock end 
+        
     // codeblock and highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -223,7 +222,7 @@
         updateButtonText();
       }
     });
-
+        
     // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
@@ -235,7 +234,6 @@
         }
 
         $('#link-name').val(selectedText);
-
       } 
     });
 
@@ -245,14 +243,14 @@
       document.getElementById('link-save').onclick = function() {
         const linkText = document.getElementById('link-name').value;
         const linkUrl = document.getElementById('link-url').value;
-        if (linkText && linkUrl) {
-          quill.insertText(range.index, linkText,'link',linkUrl);
+        if (linkText && linkUrl && range) {
+        quill.insertText(range.index, linkText,'link',linkUrl);
           if (range.length > 0) {
             quill.deleteText(range.index + linkText.length, range.length);
           }
           quill.setSelection(range.index + linkText.length, 0);
           hideLinkDialog();
-        }
+        } 
       };
 
       document.getElementById('link-cancel').onclick = function() {
@@ -280,6 +278,7 @@
       toolbarui.classList.toggle('hidden');
     });
 
+    // get value 
     var form = document.querySelector('form');
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
@@ -287,38 +286,6 @@
       htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
       quillContent.value = htmlContent;
     }
-
-    // for mention select 
-    $( "#editor" ).autocomplete({
-        source: $('#editor').data('autocomplete-source'),
-        position: {
-          my: "left bottom",
-          at: "left top",
-      },
-      select: function(event, ui) {
-        event.preventDefault();
-        var range = quill.getSelection();
-
-        range.value = ui.item.value
-        $('.memtion_name').val(range.value)
-        
-        // Check the text before the cursor
-        var textBefore = quill.getText(range.index - 1, 1);
-        if (textBefore === '@') {
-          // Delete the @ before inserting the new text
-          quill.deleteText(range.index - 1, 1);
-          range.index -= 1;
-        }
-
-        quill.insertText(range.index, ui.item.label, "user");
-        quill.setSelection(range.index + ui.item.label.length);
-        
-      }
-    });
-
-    $('#stop').click(function() {
-      clearInterval(yourInterval);
-    });
 
     // validate btn
     var sendbtn = document.querySelector(".sendbtn");
@@ -332,7 +299,21 @@
       }
     });
 
+    // take value in text 
+    var data = '<%=j @data %>'
+    quill.clipboard.dangerouslyPasteHTML(data);
+    var length = quill.getLength();
+    quill.setSelection(length, length);
+
+    // cancle btn 
+    document.querySelector('.editcancle').addEventListener('click', function() {
+      document.querySelector('#action-type').value = 'cancel';
+    });
+
+    document.querySelector('#editsend').addEventListener('click', function() {
+      document.querySelector('#action-type').value = 'send';
+    });
+
   });
 
 </script>
-

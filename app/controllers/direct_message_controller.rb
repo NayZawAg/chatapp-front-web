@@ -6,6 +6,7 @@
 
 class DirectMessageController < ApplicationController
   include FaradayApiClient
+  include ActionView::Helpers::SanitizeHelper
 
   def show
     #check unlogin user
@@ -81,4 +82,63 @@ class DirectMessageController < ApplicationController
       redirect_to t_direct_message_path(session[:s_direct_message_id])
     end
   end
+
+  # message edit 
+  def edit
+    if params[:id].nil?
+      redirect_to home_url
+    else
+      response = get_data("/directmsg/edit/#{params[:id]}")
+      @dataraw = response["message"]["directmsg"]
+      @data = sanitize(@dataraw, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
+      retrievehome
+      retrieve_direct_message
+      render "direct_show/_edit"
+      # redirect_to m_user_path(session[:s_user_id])
+    end
+  end
+
+  def update
+    if params[:action_type] == 'send'
+      id = params[:id]
+      message = params[:session][:message]
+      data = {
+        id: id,
+        message: message
+      }
+      post_data( "/update_directmsg", data)
+      redirect_to m_user_path(session[:s_user_id])
+    else 
+      redirect_to m_user_path(session[:s_user_id])
+    end
+  end
+
+  def edit_thread
+    if params[:id].nil?
+      redirect_to home_url
+    else
+      response = get_data("/directthreadmsg/edit/#{params[:id]}")
+      @dataraw = response["message"]["directthreadmsg"]
+      @data = sanitize(@dataraw, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
+      retrievehome
+      retrieve_direct_thread
+      render "direct_thread_show/_editthread"
+    end
+  end
+
+  def update_thread
+    if params[:action_type] == 'send'
+      id = params[:id]
+      message = params[:session][:message]
+      data = {
+        id: id,
+        message: message
+      }
+      post_data( "update_directthreadmsg", data)
+      redirect_to t_direct_message_path(session[:s_direct_message_id])
+    else 
+      redirect_to t_direct_message_path(session[:s_direct_message_id])
+    end
+  end
+
 end

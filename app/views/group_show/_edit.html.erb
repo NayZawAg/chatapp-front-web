@@ -25,13 +25,16 @@
       </div>
 
       <% if @m_channelsids.include?session[:s_channel_id].to_i%>
-        <%= form_for(:session, url: groupmsg_path) do |f| %>
-          <div class="col-md-11">
+        <%= form_for(:session, url: update_groupmsg_path) do |f| %>
+          <div class="col-md-10">
             <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
             <%= f.hidden_field :message, id: 'quill-content' %>
+            <%= hidden_field_tag :id, params[:id] %>
+            <%= hidden_field_tag :action_type, '', id: 'gpmsgaction' %>
           </div>
-          <div class="col-md-1 mt-10">
-            <%= f.submit "Send", class: "btn btn-primary sendbtn"%>
+          <div class="col-md-1 mt-10 arrange">
+            <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editgpmsg"%>
+						<button class="btn btn-secondary editcancle">Cancle</button>
           </div>
           <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
         <% end %>
@@ -67,12 +70,13 @@
     }
 
     static formats(node) {
-      return node.getAttribute('class');
+      return node.classList.contains('highlight') ? 'highlight' : undefined;
     }
   }
 
   HighlightBlot.blotName = 'highlight';
   HighlightBlot.tagName = 'span';
+  HighlightBlot.className = 'highlight';
   Quill.register(HighlightBlot);
 
   // code block
@@ -136,11 +140,11 @@
     function toggleHighlight() {
       var format = quill.getFormat();
       if (format.highlight) {
-          quill.format('highlight', false);
-          isHighlighting = false;
+        quill.format('highlight', false);
+        isHighlighting = false;
       } else {
-          quill.format('highlight', true);
-          isHighlighting = true;
+        quill.format('highlight', true);
+        isHighlighting = true;
       }
       updateButtonText();
       quill.focus();
@@ -148,8 +152,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isHighlighting = !!format.highlight;
-        updateButtonText();
+      isHighlighting = !!format.highlight;
+      updateButtonText();
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
@@ -196,9 +200,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isCodeblocking = !!format.codeblock;
-        updateCodeBtn();
-        // checkHighlightStatus();
+      isCodeblocking = !!format.codeblock;
+      updateCodeBtn();
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
@@ -212,7 +215,7 @@
     });
 
     updateCodeBtn();
-    // codeblock end
+    // codeblock end    
 
     // codeblock and highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
@@ -330,6 +333,21 @@
       } else {
         sendbtn.disabled = true;
       }
+    });
+
+    // take value in text box
+    var data = '<%=j @data %>'
+    quill.clipboard.dangerouslyPasteHTML(data);
+    var length = quill.getLength();
+    quill.setSelection(length, length);
+
+    // cancle btn 
+    document.querySelector('.editcancle').addEventListener('click', function() {
+      document.querySelector('#gpmsgaction').value = 'cancel';
+    });
+
+    document.querySelector('#editgpmsg').addEventListener('click', function() {
+      document.querySelector('#gpmsgaction').value = 'send';
     });
 
   });
