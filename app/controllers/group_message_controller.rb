@@ -1,5 +1,6 @@
 class GroupMessageController < ApplicationController
   include FaradayApiClient
+  include ActionView::Helpers::SanitizeHelper
 
   def show
     #check unlogin user
@@ -63,4 +64,62 @@ class GroupMessageController < ApplicationController
       redirect_to t_group_message_path(session[:s_group_message_id])
     end
   end
+
+  # edit message 
+  def edit
+    if params[:id].nil?
+      redirect_to home_url
+    else
+      response = get_data("/groupmsg/edit/#{params[:id]}")
+      @dataraw = response["message"]["groupmsg"]
+      @data = sanitize(@dataraw, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
+      retrieve_group_message
+      retrievehome
+      render "group_show/_edit"
+    end
+  end
+
+  def update
+    if params[:action_type] == 'send'
+      id = params[:id]
+      message = params[:session][:message]
+      data = {
+        id: id,
+        message: message
+      }
+      post_data( "update_groupmsg", data)
+      redirect_to m_channel_path(session[:s_channel_id])
+    else
+      redirect_to m_channel_path(session[:s_channel_id])
+    end
+  end
+
+  def edit_thread
+    if params[:id].nil?
+      redirect_to home_url
+    else
+      response = get_data("/groupthreadmsg/edit/#{params[:id]}")
+      @dataraw = response["message"]["groupthreadmsg"]
+      @data = sanitize(@dataraw, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
+      retrieve_group_thread
+      retrievehome
+      render "group_thread_show/_editthread"
+    end
+  end
+  
+  def update_thread
+    if params[:action_type] == 'send'
+      id = params[:id]
+      message = params[:session][:message]
+      data = {
+        id: id,
+        message: message
+      }
+      post_data( "update_groupthreadmsg", data)
+      redirect_to t_group_message_path(session[:s_group_message_id])
+    else
+      redirect_to t_group_message_path(session[:s_group_message_id])
+    end
+  end
+
 end

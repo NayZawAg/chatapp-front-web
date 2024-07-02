@@ -30,6 +30,12 @@
       <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
       <p class="style24"></p>
+
+      <% if session[:current_user_id] == t_group_thread['send_user_id'] %>
+        <p class="style22">
+          <%= link_to "",  edit_groupthreadmsg_path(id: t_group_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
+        </p>
+      <% end %>
       
       <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
         <%= link_to "", groupunstarthread_path(:id => t_group_thread['id']), class:'fas fa-star' %></li>
@@ -280,8 +286,6 @@
         }
 
         $('#link-name').val(selectedText);
-        console.log(selectedText)
-
       } 
     });
 
@@ -330,7 +334,9 @@
 		var form = document.querySelector('form');
 		form.onsubmit = function() {
 		  var htmlContent = quill.getSemanticHTML();
-      document.querySelector('#quill-content').value = htmlContent;
+      var quillContent = document.querySelector('#quill-content');
+      htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
+      quillContent.value = htmlContent;
 		}
 
 

@@ -43,6 +43,12 @@
 
             <p class="style24"><%= link_to t_group_message['count'],  t_group_message_path(id: t_group_message['id']), class: 'fab fa-facebook-messenger'%></p>
 
+            <% if  session[:current_user_id] == t_group_message['send_user_id'] %>
+              <p class="style22">
+                <%= link_to "",  edit_groupmsg_path(id: t_group_message['id']), class: 'far fa-edit', id: 'editbtn'%>
+              </p>
+            <% end %>
+
             <% if @t_group_star_msgids.include? t_group_message['id'] %>
               <%= link_to "",  groupunstar_path(:id => t_group_message['id']), class:'fas fa-star' %>
             <% else %>

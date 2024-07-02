@@ -2,44 +2,59 @@
 <div id="main">
   <div>
     <div class="title">
-      <h2 class="style1"><%= @s_user['name']%> </h2>
+      <h2 class="style1"><%= @s_channel['channel_name']%><span style="margin-left: 20px"> <i class="material-icons" >&#xe7fc;</i> <%= link_to @u_count,  channeluser_url %></span></h2>
     </div>
+    
     <hr>
+
     <p class="style21">1</p>
-    <p class="style22"><strong><%= @sender_name%></strong></p>
-    <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>     
-    <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(@t_direct_message['directmsg'])%></div>
-  </div>
+
+    <p class="style22"><strong><%= @send_user['name']%></strong></p>
+    
+    <p class="style23"><%= @t_group_message['created_at'].to_time.strftime("%F") %>/<%= @t_group_message['created_at'].to_time.strftime("%I:%M%p") %></p>
+            
+    <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px">  <%= render_html(@t_group_message['groupmsg'])%></div>
+
   <hr>
+
   <div class="txtmsg">
     <% @count = 0 %>
     <h2 class="style1">Reply</h2>
-    <hr>   
-    <% @t_direct_threads.each do |t_direct_thread| %>
+    <hr>
+    
+    <% @t_group_threads.each do |t_group_thread| %>
       <p class="style21"><%= @count += 1 %></p>
-      <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
-      <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p> 
-      <% if  session[:m_user] == t_direct_thread['name'] %>
-        <p class="style22">
-					<%= link_to "",  edit_directthreadmsg_path(id: t_direct_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
-        </p>
-      <% end %>   
-      <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
-        <%= link_to "", unstarthread_path(:id => t_direct_thread['id']), class:'fas fa-star' %></li>
+
+      <p class="style22"><strong><%= t_group_thread['name']%></strong></p>
+
+      <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+
+      <p class="style24"></p>
+
+      <% if session[:current_user_id] == t_group_thread['send_user_id'] %>
+				<p class="style22">
+					<%= link_to "",  edit_groupthreadmsg_path(id: t_group_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
+				</p>
+			<% end %>
+      
+      <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
+        <%= link_to "", groupunstarthread_path(:id => t_group_thread['id']), class:'fas fa-star' %></li>
       <% else %>
-        <%= link_to "",  starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
+        <%= link_to "",  groupstarthread_path(:id => t_group_thread['id']), class:'far fa-star'%></li>
+      <% end %> 
+      
+      <% if session[:current_user_id] == t_group_thread["send_user_id"] %>
+        <%= link_to "",  delete_groupthread_path(:id => t_group_thread['id']), class:'glyphicon glyphicon-trash'%>
       <% end %>
-      <% if  session[:m_user] == t_direct_thread['name'] %>  
-        <%= link_to "",  delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash' %>
-      <% end %>
-      <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread['directthreadmsg'])%></div>         
+      <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px">  <%= render_html(t_group_thread['groupthreadmsg'])%></div>
+            
     <% end %>
   </div>
 </div>
 
 <div class = "textboxbg">
   <div class="textboxeditor">
+
     <div id="toolbar">
       <button class="ql-bold disable"></button>
       <button class="ql-italic disable"></button>
@@ -51,6 +66,7 @@
       <button id="code-block" class="btn-icon"><i class="fas fa-code"></i></button>
       <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
     </div>
+
     <div id="link-dialog" style="display: none;">
       <h3 id= "link-title">Add your link</h3>
       <input type="text" id="link-name" placeholder="Enter link name">
@@ -58,30 +74,44 @@
       <button id="link-cancel">Cancel</button>
       <button id="link-save">Yes</button>
     </div>
-    <%= form_for(:session, url: directthreadmsg_path) do |f| %>
-      <div class="col-md-11">
-        <div id="editor"></div>  
-        <%= f.hidden_field :message, id: 'quill-content' %>
-      </div>
-      <div class="col-md-1 mt-10">
-        <%= f.submit "Send", class: "btn btn-primary sendbtn" %>
+
+    <% if @m_channelsids.include?session[:s_channel_id].to_i%>
+      <%= form_for(:session, url: update_groupthreadmsg_path) do |f| %>
+        <div class="col-md-10">
+          <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
+          <%= f.hidden_field :message, id: 'quill-content' %>   
+					<%= hidden_field_tag :id, params[:id] %>
+          <%= hidden_field_tag :action_type, '', id: 'gpthaction' %>          
+        </div>
+        <div class="col-md-1 mt-10 arrange">
+          <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editgpth" %>
+					<button class="btn btn-secondary editcancle">Cancle</button>
+        </div>
+        <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
+      <% end %>
+    <% else %>
+      <div style="padding-bottom: 20px">
+      <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: 'btn btn-primary'%>
       </div>
     <% end %>
+
     <div class="col-md-11">
       <span><i class="fas fa-plus"></i></span>
       <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
     </div>
+
   </div>
 </div>
+
 <div>
   <%= render 'leftpanel/leftpanel' %>
 </div>
 
 <script>
 
-  window.scrollTo(0,document.body.scrollHeight);
   // highlight
   var Inline = Quill.import('blots/inline');
+
   class HighlightBlot extends Inline {
     static create(value) {
       let node = super.create();
@@ -90,14 +120,16 @@
     }
 
     static formats(node) {
-      return node.getAttribute('class');
+      return node.classList.contains('highlight') ? 'highlight' : undefined;
     }
   }
+
   HighlightBlot.blotName = 'highlight';
   HighlightBlot.tagName = 'span';
+	HighlightBlot.className = 'highlight';
   Quill.register(HighlightBlot);
 
-  //code block
+  // code block
   var Block = Quill.import('blots/inline');
   class CodeBlot extends Block {
     static create(value) {
@@ -115,18 +147,18 @@
   CodeBlot.tagName = 'span';
   Quill.register(CodeBlot);
 
-  //call quill
-  document.addEventListener("DOMContentLoaded", function() {
-    const toolbarOptions = [
+  // call quill
+	document.addEventListener("DOMContentLoaded", function() {
+	  const toolbarOptions = [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       ['bold', 'italic', 'strike'],
       ['link'],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote'],
     ];
-  
-    const quill = new Quill('#editor', {
-      modules: {
+
+		const quill = new Quill('#editor', {
+			modules: {
         toolbar: {
           container: '#toolbar',
           handlers: {
@@ -138,14 +170,16 @@
             }
           }
         }
-      },
+			},
       placeholder: 'Type your message here ...',
-      theme: 'snow'
+			theme: 'snow'
     });
 
     // highlight start
     var isHighlighting = false;
+
     function updateButtonText() {
+       
       if(isHighlighting){
         document.querySelector('#highlight-text').classList.add('active');
       } else {
@@ -168,11 +202,12 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isHighlighting = !!format.highlight;
-        updateButtonText();
+      isHighlighting = !!format.highlight;
+      updateButtonText();
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
+       
       if (!isCodeblocking) {
         toggleHighlight();
       } else {
@@ -181,13 +216,15 @@
       var htmlContent = quill.root.innerHTML;
       document.querySelector('#quill-content').value = htmlContent;
     });
+
     updateButtonText();
     // highlight end 
 
     // codeblock start 
     var isCodeblocking = false;
-    function updateCodeBtn() {     
-      if(isCodeblocking){
+
+    function updateCodeBtn() {
+      if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
         btns.forEach(btn => btn.disabled = true);
@@ -213,22 +250,23 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isCodeblocking = !!format.codeblock;
-        updateCodeBtn();
+      isCodeblocking = !!format.codeblock;
+      updateCodeBtn();
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
-      if(!isHighlighting){
+      if (!isHighlighting) {
         toggleCodeblock();
-      }else{
+      } else {
         quill.focus();
       }
       var htmlContent = quill.root.innerHTML;
       document.querySelector('#quill-content').value = htmlContent;
     });
+
     updateCodeBtn();
     // codeblock end 
-
+        
     // codeblock and highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -238,66 +276,106 @@
         updateButtonText();
       }
     });
-        
-    // for link dialog 
+
+		// for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
       if (range && range.length > 0) {
+        // Get the selected text
         var selectedText = quill.getText(range.index, range.length);
+        // Place the selected text in the input field
+
         if(selectedText){
           $('#toolbar').removeClass("hidden");
         }
+
         $('#link-name').val(selectedText);
-      }
+
+      } 
     });
 
-    function showLinkDialog(range) {
-      document.getElementById('link-dialog').style.display = 'block';
-      document.getElementById('link-name').focus();
-      document.getElementById('link-save').onclick = function() {
-        const linkText = document.getElementById('link-name').value;
-        const linkUrl = document.getElementById('link-url').value;
-        if (linkText && linkUrl) {
+		function showLinkDialog(range) {
+			document.getElementById('link-dialog').style.display = 'block';
+			document.getElementById('link-name').focus();
+
+			document.getElementById('link-save').onclick = function() {
+				const linkText = document.getElementById('link-name').value;
+				const linkUrl = document.getElementById('link-url').value;
+				if (linkText && linkUrl) {
           quill.insertText(range.index, linkText,'link',linkUrl);
           if (range.length > 0) {
             quill.deleteText(range.index + linkText.length, range.length);
           }
           quill.setSelection(range.index + linkText.length, 0);
           hideLinkDialog();
-        }
-      };
-      document.getElementById('link-cancel').onclick = function() {
-        hideLinkDialog();
-      };
-    }
+				}
+			};
 
-    function hideLinkDialog() {
-      document.getElementById('link-dialog').style.display = 'none';
-      document.getElementById('link-name').value = '';
-      document.getElementById('link-url').value = '';
-    }
+			document.getElementById('link-cancel').onclick = function() {
+				hideLinkDialog();
+			};
+		}
 
-    // Prevent Quill from losing focus when clicking inside the dialog
-    document.getElementById('link-dialog').addEventListener('mousedown', function(event) {
-      event.stopPropagation();
-    });
+		function hideLinkDialog() {
+			document.getElementById('link-dialog').style.display = 'none';
+			document.getElementById('link-name').value = '';
+			document.getElementById('link-url').value = '';
+		}
 
-    // for toggle toolbar 
-    const toolbar = quill.getModule('toolbar');
-    const toolbarui = document.getElementById('toolbar');
-    const toggleButton = document.getElementById('toggle-toolbar');
+		// Prevent Quill from losing focus when clicking inside the dialog
+		document.getElementById('link-dialog').addEventListener('mousedown', function(event) {
+			event.stopPropagation();
+		});
 
-    toggleButton.addEventListener('click', function() {
-      toolbarui.classList.toggle('hidden');
-    });
+		// for toggle toolbar 
+		const toolbar = quill.getModule('toolbar');
+		const toolbarui = document.getElementById('toolbar');
+		const toggleButton = document.getElementById('toggle-toolbar');
 
-    var form = document.querySelector('form');
-    form.onsubmit = function() {
-      var htmlContent = quill.getSemanticHTML();
+		toggleButton.addEventListener('click', function() {
+			toolbarui.classList.toggle('hidden');
+		});
+
+		var form = document.querySelector('form');
+		form.onsubmit = function() {
+		  var htmlContent = quill.getSemanticHTML();
       var quillContent = document.querySelector('#quill-content');
       htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
       quillContent.value = htmlContent;
-    }
+		}
+
+
+		// for mention select 
+		$( "#editor" ).autocomplete({
+			source: $('#editor').data('autocomplete-source'),
+			position: {
+        my: "left bottom",
+        at: "left top",
+			},
+			select: function(event, ui) {
+			event.preventDefault();
+
+			var range = quill.getSelection();
+
+      range.value = ui.item.value
+      $('.memtion_name').val(range.value)
+		
+			// Check the text before the cursor
+			var textBefore = quill.getText(range.index - 1, 1);
+			if (textBefore === '@') {
+        // Delete the @ before inserting the new text
+        quill.deleteText(range.index - 1, 1);
+        range.index -= 1;
+			}
+
+			quill.insertText(range.index, ui.item.label, "user");
+			quill.setSelection(range.index + ui.item.label.length);
+			}
+		});
+    
+    $('#stop').click(function() {
+      clearInterval(yourInterval);
+    });
 
     // validate btn
     var sendbtn = document.querySelector(".sendbtn");
@@ -311,6 +389,23 @@
       }
     });
 
+		// take value in text box
+    var data = '<%=j @data %>'
+    quill.clipboard.dangerouslyPasteHTML(data);
+    var length = quill.getLength();
+    quill.setSelection(length, length);
+
+    // cancle btn 
+    document.querySelector('.editcancle').addEventListener('click', function() {
+      document.querySelector('#gpthaction').value = 'cancel';
+    });
+
+    document.querySelector('#editgpth').addEventListener('click', function() {
+      document.querySelector('#gpthaction').value = 'send';
+    });
+
   });
+
+  window.scrollTo(0,document.body.scrollHeight);
 
 </script>

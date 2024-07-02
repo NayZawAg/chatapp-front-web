@@ -40,7 +40,6 @@ class ApplicationController < ActionController::Base
 
   def retrieve_direct_message
     response = get_data("/m_users/#{session[:s_user_id]}")
-    @m_user = response['m_user']
     @s_user = response['s_user']
     @t_direct_messages = response['t_direct_messages']
     @temp_direct_star_msgids = response['temp_direct_star_msgids']

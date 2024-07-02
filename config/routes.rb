@@ -61,8 +61,6 @@ Rails.application.routes.draw do
   post 'groupthreadmsg' => 'group_message#showthread'
 
   get 'refresh' => 'sessions#refresh'
-  get 'updatedirectmsg' => 'sessions#updatedirectmsg'
-  get 'updategroupmsg' => 'sessions#updategroupmsg'
 
   get 'refresh_direct' => 'm_users#refresh_direct'
   get 'refresh_group' => 'm_channels#refresh_group'
@@ -72,6 +70,19 @@ Rails.application.routes.draw do
   # edit username
   get 'useredit' => 'm_users#edituser'
   patch 'useredit' => 'm_users#updateuser'
+
+  # edit direct message 
+  get '/directmsg/edit/:id' => 'direct_message#edit', as: 'edit_directmsg'
+  post 'update_directmsg' => 'direct_message#update'
+  # edit direct thread
+  get '/directthreadmsg/edit/:id' => 'direct_message#edit_thread', as: 'edit_directthreadmsg'
+  post 'update_directthreadmsg' => 'direct_message#update_thread'
+  # edit group message
+  get '/groupmsg/edit/:id' => 'group_message#edit', as: 'edit_groupmsg'
+  post 'update_groupmsg'  => 'group_message#update'
+  # edit group thread
+  get '/groupthreadmsg/edit/:id' => 'group_message#edit_thread', as: 'edit_groupthreadmsg'
+  post 'update_groupthreadmsg' => 'group_message#update_thread'
 
   resources :m_workspaces
   resources :m_users
