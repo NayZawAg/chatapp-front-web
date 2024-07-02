@@ -1,4 +1,4 @@
-<div id="main">   
+<div id="main">
   <div class = "txtmsg">	
     <% @count = 0 %>
     <%= render 'direct_show/directmsglists' %>
@@ -26,7 +26,7 @@
         </div>
             
         <div class="editmsg">
-           <%= form_for(:session, url: update_directmsg_path) do |f| %>
+          <%= form_for(:session, url: update_directmsg_path) do |f| %>
             <div class="col-md-10">
               <div id="editor"></div>
                 <%= f.hidden_field :message, id: 'quill-content' %>
@@ -37,10 +37,10 @@
               <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editsend"%>
               <button class="btn btn-secondary editcancle">Cancle</button>
             </div>
-            <% end %>       
+          <% end %>
 
         </div>
-    
+
         <div class="col-md-11">
           <span><i class="fas fa-plus"></i></span>
           <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
@@ -126,7 +126,7 @@
     // highlight start
     var isHighlighting = false;
 
-    function updateButtonText() {     
+    function updateButtonText() {
       if(isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
@@ -153,7 +153,7 @@
       updateButtonText();
     });
 
-    document.querySelector('#highlight-text').addEventListener('click', function() {     
+    document.querySelector('#highlight-text').addEventListener('click', function() {
       if(!isCodeblocking) {
         toggleHighlight();
       } else {
@@ -169,7 +169,7 @@
     // codeblock start 
     var isCodeblocking = false;
 
-    function updateCodeBtn() {   
+    function updateCodeBtn() {
       if(isCodeblocking){
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
@@ -243,7 +243,7 @@
       document.getElementById('link-save').onclick = function() {
         const linkText = document.getElementById('link-name').value;
         const linkUrl = document.getElementById('link-url').value;
-        if (linkText && linkUrl && range) {      
+        if (linkText && linkUrl && range) {
         quill.insertText(range.index, linkText,'link',linkUrl);
           if (range.length > 0) {
             quill.deleteText(range.index + linkText.length, range.length);
@@ -313,7 +313,7 @@
     document.querySelector('#editsend').addEventListener('click', function() {
       document.querySelector('#action-type').value = 'send';
     });
-    
+
   });
 
 </script>
