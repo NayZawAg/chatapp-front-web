@@ -75,24 +75,18 @@
       <button id="link-save">Yes</button>
     </div>
 
-    <% if @m_channelsids.include?session[:s_channel_id].to_i%>
-      <%= form_for(:session, url: update_groupthreadmsg_path) do |f| %>
-        <div class="col-md-10">
-          <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
-          <%= f.hidden_field :message, id: 'quill-content' %>   
-					<%= hidden_field_tag :id, params[:id] %>
-          <%= hidden_field_tag :action_type, '', id: 'gpthaction' %>          
-        </div>
-        <div class="col-md-1 mt-10 arrange">
-          <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editgpth" %>
-					<button class="btn btn-secondary editcancle">Cancle</button>
-        </div>
-        <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
-      <% end %>
-    <% else %>
-      <div style="padding-bottom: 20px">
-      <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: 'btn btn-primary'%>
+    <%= form_for(:session, url: update_groupthreadmsg_path) do |f| %>
+      <div class="col-md-10">
+        <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
+        <%= f.hidden_field :message, id: 'quill-content' %>   
+        <%= hidden_field_tag :id, params[:id] %>
+        <%= hidden_field_tag :action_type, '', id: 'gpthaction' %>          
       </div>
+      <div class="col-md-1 mt-10 arrange">
+        <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editgpth" %>
+        <button class="btn btn-secondary editcancle">Cancle</button>
+      </div>
+      <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
     <% end %>
 
     <div class="col-md-11">
@@ -340,7 +334,7 @@
 		form.onsubmit = function() {
 		  var htmlContent = quill.getSemanticHTML();
       var quillContent = document.querySelector('#quill-content');
-      htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
+      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
 		}
 
