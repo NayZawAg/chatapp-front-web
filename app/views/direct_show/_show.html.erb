@@ -278,7 +278,7 @@
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
       var quillContent = document.querySelector('#quill-content');
-      htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
+      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
     }
 

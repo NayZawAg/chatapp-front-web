@@ -1,4 +1,3 @@
-
 <div id="main">
   <div>
     <div class="title">
@@ -54,28 +53,27 @@
 
 <div class = "textboxbg">
   <div class="textboxeditor">
-
-    <div id="toolbar">
-      <button class="ql-bold disable"></button>
-      <button class="ql-italic disable"></button>
-      <button class="ql-strike disable"></button>
-      <button class="ql-link disable"></button>
-      <button class="ql-list" value="ordered"></button>
-      <button class="ql-list" value="bullet"></button>
-      <button class="ql-blockquote"></button>
-      <button id="code-block" class="btn-icon"><i class="fas fa-code"></i></button>
-      <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
-    </div>
-
-    <div id="link-dialog" style="display: none;">
-      <h3 id= "link-title">Add your link</h3>
-      <input type="text" id="link-name" placeholder="Enter link name">
-      <input type="text" id="link-url" placeholder="Enter URL">
-      <button id="link-cancel">Cancel</button>
-      <button id="link-save">Yes</button>
-    </div>
-
     <% if @m_channelsids.include?session[:s_channel_id].to_i%>
+      <div id="toolbar">
+        <button class="ql-bold disable"></button>
+        <button class="ql-italic disable"></button>
+        <button class="ql-strike disable"></button>
+        <button class="ql-link disable"></button>
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-blockquote"></button>
+        <button id="code-block" class="btn-icon"><i class="fas fa-code"></i></button>
+        <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
+      </div>
+
+      <div id="link-dialog" style="display: none;">
+        <h3 id= "link-title">Add your link</h3>
+        <input type="text" id="link-name" placeholder="Enter link name">
+        <input type="text" id="link-url" placeholder="Enter URL">
+        <button id="link-cancel">Cancel</button>
+        <button id="link-save">Yes</button>
+      </div>
+
       <%= form_for(:session, url: groupthreadmsg_path) do |f| %>
         <div class="col-md-11">
           <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
@@ -86,17 +84,17 @@
         </div>
         <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
       <% end %>
+
+      <div class="col-md-11">
+        <span><i class="fas fa-plus"></i></span>
+        <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+      </div>
+
     <% else %>
       <div style="padding-bottom: 20px">
       <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: 'btn btn-primary'%>
       </div>
     <% end %>
-
-    <div class="col-md-11">
-      <span><i class="fas fa-plus"></i></span>
-      <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
-    </div>
-
   </div>
 </div>
 
@@ -176,7 +174,7 @@
 
     function updateButtonText() {
        
-      if(isHighlighting){
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -281,12 +279,12 @@
         var selectedText = quill.getText(range.index, range.length);
         // Place the selected text in the input field
 
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
 
         $('#link-name').val(selectedText);
-      } 
+      }
     });
 
     function showLinkDialog(range) {
@@ -335,7 +333,7 @@
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
       var quillContent = document.querySelector('#quill-content');
-      htmlContent = htmlContent.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1');
+      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
     }
 
