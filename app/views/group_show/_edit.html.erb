@@ -1,5 +1,4 @@
-
-<div id="main"> 
+<div id="main">
   <%= render 'group_show/groupmsglists' %>
   <div class = "textboxbg">
     <div class="textboxeditor">
@@ -123,7 +122,7 @@
 
     function updateButtonText() {
        
-      if(isHighlighting){
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -150,7 +149,7 @@
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
-      if(!isCodeblocking) {
+      if (!isCodeblocking) {
         toggleHighlight();
       } else {
         quill.focus();
@@ -167,7 +166,7 @@
 
     function updateCodeBtn() {
       
-      if(isCodeblocking){
+      if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
         btns.forEach(btn => btn.disabled = true);
@@ -198,7 +197,7 @@
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
-      if(!isHighlighting) {
+      if (!isHighlighting) {
         toggleCodeblock();
       } else {
         quill.focus();
@@ -226,13 +225,13 @@
       if (range && range.length > 0) {
         var selectedText = quill.getText(range.index, range.length);
 
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
 
         $('#link-name').val(selectedText);
 
-      } 
+      }
     });
 
     function showLinkDialog(range) {
@@ -346,4 +345,3 @@
   });
 
 </script>
-

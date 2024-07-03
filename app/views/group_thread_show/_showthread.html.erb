@@ -1,4 +1,3 @@
-
 <div id="main">
   <div>
     <div class="title">
@@ -175,7 +174,7 @@
 
     function updateButtonText() {
        
-      if(isHighlighting){
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -280,12 +279,12 @@
         var selectedText = quill.getText(range.index, range.length);
         // Place the selected text in the input field
 
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
 
         $('#link-name').val(selectedText);
-      } 
+      }
     });
 
     function showLinkDialog(range) {

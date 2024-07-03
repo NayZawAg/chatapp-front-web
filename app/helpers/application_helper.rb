@@ -15,8 +15,8 @@ module ApplicationHelper
     content = sanitize(content, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
   
     # Ensure all lines are wrapped in <p> tags
-   wrapped = content.split("\n").map { |line| "<p>#{line}</p>" }.join("\n")
-   wrapped.html_safe
+    wrapped = content.split("\n").map { |line| "<p>#{line}</p>" }.join("\n")
+    wrapped.html_safe
 
   end
 
