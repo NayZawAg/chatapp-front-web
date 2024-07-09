@@ -4,7 +4,7 @@
 
 <div class="container para">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for @m_user, url: m_users_path, html: { onclick: "return validateForm()" } do |f| %>      
+    <%= form_for @m_user, url: m_users_path, html: { onclick: "return validateForm()" } do |f| %>
       <%= render 'shared/error_messages', object: f.object %>
 
       <%= f.label :workspace_name, "Workspace Name" %>
@@ -43,7 +43,7 @@
     password_error.textContent = '';
     if (password != "" && password_confirmation != "") {
       if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@\'#'$&*]).{8,}/.test(password) ) {
-        password_error.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";      
+        password_error.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";
         return false;
       }
     }

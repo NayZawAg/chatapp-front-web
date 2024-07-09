@@ -17,7 +17,7 @@
         <%= f.label :password %>
         <%= f.password_field :password, class: 'form-control validatepwd' %>
         <%= f.label :password_confirmation %>
-        <%= f.password_field :password_confirmation, class: 'form-control validate_confirmpwd' %>     
+        <%= f.password_field :password_confirmation, class: 'form-control validate_confirmpwd' %>
         <%= f.submit "Update", class: "btn btn-primary" %>
         <div class="warning-message" style="color: #0077B6; margin-top: 10px;">
           <strong style="margin-bottom: 5px;">Password must contain</strong>
@@ -44,7 +44,7 @@
     password_error_msg.textContent = '';
     if (password.present? && password_confirmation.present?) {
       if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@\'#'$&*]).{8,}/.test(password) ) {
-        password_error_msg.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";      
+        password_error_msg.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";
         return false;
       }
     }

@@ -3,7 +3,7 @@
 <h1>Create Workspace</h1>
 <div class="container para">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for MUser.new, url: m_workspaces_path, html: { onclick: "return validateForm()" } do |f| %>    
+    <%= form_for MUser.new, url: m_workspaces_path, html: { onclick: "return validateForm()" } do |f| %>
       <%= render 'shared/error_messages', object: f.object %>
 
       <%= f.label :workspace_name, "Workspace Name" %>
@@ -43,12 +43,10 @@
     password_err.textContent = '';
     if (password != "" && password_confirmation != "") {
       if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@\'#'$&*]).{8,}/.test(password) ) {
-        password_err.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";      
+        password_err.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";
         return false;
       }
     }
     return true;
   }
 </script>
-
-
