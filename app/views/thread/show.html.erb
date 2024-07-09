@@ -2,19 +2,37 @@
 <div id="main">
   <h1>Thread Lists</h1>
   <div>
-    <h2 class="style1">Direct Thread</h1>
+    <h2 class="style1">Direct Thread</h2>
     <% @t_direct_messages.each do |t_direct_message| %>
 
       <h2 class="style1"> <%= t_direct_message['name'] %> </h2>
+
+      <% otherUser = "" %>
+      <% if t_direct_message['sender_id'] != @current_user_id %>
+        <% otherUser = t_direct_message['name'] %>
+      <% end %>
+      <% @t_direct_threads.each do |t_direct_thread| %>
+        <% if t_direct_message['id'] == t_direct_thread['t_direct_message_id'] %>
+          <% if @current_user_id != t_direct_thread['sender_id'] %>
+            <% otherUser = t_direct_thread['name'] %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if otherUser == "" %>
+        <h5 class="groupthreadnames">自分のみ</h5>
+      <% else %>
+        <h5 class="groupthreadnames"> <%= otherUser %>さんとあなた </h5>
+      <% end %>
 
       <p class="style21">1</p>
 
       <p class="style22"><%= t_direct_message['name']%></p>
 
       <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-            
+
       <p class="style24"></p> 
-              
+
       <% if @t_direct_star_msgids.include? t_direct_message['id']%>
         <%= link_to "", "", class:'fas fa-star' %></li>
       <% else %>
@@ -22,47 +40,72 @@
       <% end %> 
 
       <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_direct_message['directmsg'])%></div>
-      
-        <h2 class="style1">Reply</h2>
 
-        <% @count = 0 %>
-        <% @t_direct_threads.each do |t_direct_thread| %>
+      <h2 class="style1">Reply</h2>
 
-          <% if t_direct_message['id']== t_direct_thread['t_direct_message_id'] %>
+      <% @count = 0 %>
+      <% @t_direct_threads.each do |t_direct_thread| %>
+        <% if t_direct_message['id']== t_direct_thread['t_direct_message_id'] %>
+          <p class="style21"><%= @count += 1 %></p>
 
-            <p class="style21"><%= @count += 1 %></p>
+          <p class="style22"><%= t_direct_thread['name']%></p>
 
-            <p class="style22"><%= t_direct_thread['name']%></p>
+          <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-            <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+          <p class="style24"></p> 
 
-            <p class="style24"></p> 
-            
-            <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
-              <%= link_to "", "", class:'fas fa-star' %></li>
-            <% else %>
-              <%= link_to "",  "", class:'far fa-star' %></li>
-            <% end %> 
+          <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
+            <%= link_to "", "", class:'fas fa-star' %></li>
+          <% else %>
+            <%= link_to "",  "", class:'far fa-star' %></li>
+          <% end %> 
 
-            <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_direct_thread['directthreadmsg'])%></div>
-          <% end %>
+          <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_direct_thread['directthreadmsg'])%></div>
         <% end %>
-        <hr>
       <% end %>
+      <hr>
+    <% end %>
   </div>
 
   <div>
-    <h2 class="style1">Group Thread</h1>
+    <h2 class="style1">Group Thread</h2>
     <% @t_group_messages.each do |t_group_message| %>
+      <h2 class="channelnames"><%= t_group_message['channel_name'] %></h2>
+      <% sendUserNames = [] %>
+      <% loginUserName = "" %>
+
+      <% if t_group_message['m_user_id'] != @current_user_id %>
+        <% sendUserNames.unshift(t_group_message['name']) %>
+      <% else %>
+        <% loginUserName = "とあなた" %>
+      <% end %>
+
+      <% @t_group_threads.each do |t_group_thread| %>
+        <% if t_group_message['id'] == t_group_thread['t_group_message_id'] %>
+          <% if @current_user_id != t_group_thread['m_user_id'] %>
+            <% sendUserNames.unshift(t_group_thread['name']) %>
+          <% else %>
+            <% loginUserName = "とあなた" %>
+          <%end%>
+        <% end %>
+      <% end %>
+      <% sendUserNames = sendUserNames | [] %>
+      <% if sendUserNames.length == 0 %>
+        <h5 class="groupthreadnames">自分のみ</h5>
+      <% else %>
+        <h5 class="groupthreadnames">
+        <%= (sendUserNames.join("さん、") + "さん、" + loginUserName) %>
+        </h5>
+      <% end %>
 
       <p class="style21">1</p>
 
       <p class="style22"><%= t_group_message['name']%></p>
-      
+
       <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-              
+
       <p class="style24"></p>
-              
+
       <% if @t_group_star_msgids.include? t_group_message['id'] %>
         <%= link_to "", "", class:'fas fa-star' %></li>
       <% else %>
@@ -70,7 +113,7 @@
       <% end %> 
 
       <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_group_message['groupmsg'])%></div>
-  
+
       <h2 class="style1">Reply</h2>
 
       <% @count = 0 %>
@@ -85,7 +128,7 @@
           <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
           <p class="style24"></p>
-          
+
           <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
             <%= link_to "", "", class:'fas fa-star' %></li>
           <% else %>
@@ -98,8 +141,8 @@
       <hr>
     <% end %>
   </div>
-            
+</div>
+
 <div>
   <%= render 'leftpanel/leftpanel' %>
 </div>
-  
