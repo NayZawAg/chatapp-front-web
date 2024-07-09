@@ -30,9 +30,9 @@
       <p class="style22"><%= t_direct_message['name']%></p>
 
       <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-              
+
       <p class="style24"></p> 
-                
+
       <% if @t_direct_star_msgids.include? t_direct_message['id']%>
         <%= link_to "", "", class:'fas fa-star' %></li>
       <% else %>
@@ -40,7 +40,7 @@
       <% end %> 
 
       <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(t_direct_message['directmsg'])%></div>
-            
+
       <h2 class="style1">Reply</h2>
 
       <% @count = 0 %>
@@ -53,7 +53,7 @@
           <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
           <p class="style24"></p> 
-          
+
           <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
             <%= link_to "", "", class:'fas fa-star' %></li>
           <% else %>
@@ -101,11 +101,11 @@
       <p class="style21">1</p>
 
       <p class="style22"><%= t_group_message['name']%></p>
-      
+
       <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-              
+
       <p class="style24"></p>
-          
+
       <% if @t_group_star_msgids.include? t_group_message['id'] %>
         <%= link_to "", "", class:'fas fa-star' %></li>
       <% else %>
@@ -128,7 +128,7 @@
           <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
           <p class="style24"></p>
-              
+
           <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
             <%= link_to "", "", class:'fas fa-star' %></li>
           <% else %>
