@@ -6,5 +6,6 @@ class TGroupMessage
   attr_accessor :m_user_id
   attr_accessor :created_at
   attr_accessor :updated_at
+  attr_accessor :draft_message_status
 
 end

@@ -26,16 +26,17 @@
           <button id="link-save">Yes</button>
         </div>
             
-          <%= form_for(:session, url: directmsg_path) do |f| %>
-            <div class="col-md-11">
-              <div id="editor"></div>
-              <%= f.hidden_field :message, id: 'quill-content' %>
-            </div>
-            <div class="col-md-1 mt-10">
-              <%= f.submit "Send", class: "btn btn-primary sendbtn"%>
-            </div>
-          <% end %>
-    
+        <%= form_for(:session, url: directmsg_path) do |f| %>
+          <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">                  
+            <div id="editor"></div>  
+            <%= f.hidden_field :message, id: 'quill-content' %>  
+            <%= f.hidden_field :draft_status, value:false %>  
+          </div>
+          <div class="col-md-1 mt-10">
+            <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
+          </div>              
+        <% end %>
+
         <div class="col-md-11">
           <span><i class="fas fa-plus"></i></span>
           <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
@@ -115,6 +116,93 @@
       placeholder: 'Type your message here ...',
       theme: 'snow'
     });
+    
+    var senderId = $('#form').data('sender-id');
+    var t_direct_messages = JSON.parse($('#form').attr('draftData'));
+    var draft_message_arr = t_direct_messages.find((t_direct_message)=>{
+      return (t_direct_message.send_user_id == senderId && t_direct_message.draft_message_status);
+    });
+    var isClickSendButton = false;
+    var isSaveDraft = true;
+    if (draft_message_arr != undefined ) {
+      var draftedMessage = draft_message_arr.directmsg;
+      var draftSenderId = draft_message_arr.send_user_id;
+      var draftedMessageId = draft_message_arr.id;
+      isSaveDraft = false;    
+    }
+    quill.setContents([{
+      insert: draftedMessage,
+    }]);
+
+    document.querySelector('#send_btn').addEventListener('click', function() {
+      isClickSendButton = true;
+    });
+    
+    $(window).bind('beforeunload', () => {
+      var messageContent = quill.getText().trim();
+      if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          type: 'POST',
+          url: '<%= directmsg_path %>',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          dataType: 'json',
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+        });
+      }
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft){
+        var draftStatus = true;
+        var formData = {
+          id: draftedMessageId,
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          url: '<%= update_directmsg_path %>',
+          contentType: 'application/json',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(formData),
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (!isClickSendButton && messageContent.length == 0) {
+        $.ajax({
+          url: '<%= delete_directmsg_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: draftedMessageId},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          } 
+        });
+      }
+      else if (isClickSendButton) {
+        var delete_draft_massage_id = draft_message_arr.id;
+        $.ajax({
+          url: '<%= delete_directmsg_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: delete_draft_massage_id},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          } 
+        });       
+      }
+    });   
 
     // highlight start
     var isHighlighting = false;
@@ -293,7 +381,7 @@
         sendbtn.disabled = true;
       }
     });
-   
+       
   });
 
 </script>

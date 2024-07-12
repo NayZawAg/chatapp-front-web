@@ -34,7 +34,7 @@
       <% if @t_group_message_datesize.include?t_group_message_date['created_date'] %>
         <h2 class="style1"><%= t_group_message_date['created_date'] %></h2>
         <% @t_group_messages.each do |t_group_message| %>
-          <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s %>
+          <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s && !t_group_message['draft_message_status'] %>
             <p class="style21"><%= @count += 1 %></p>
 
             <p class="style22"><strong><%= t_group_message['name']%></strong></p>

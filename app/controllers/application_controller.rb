@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
     @m_channels = MChannel.new
 
     @current_user = response["current_user"]
+    @current_user.delete("profile_image_url")
     @m_usering = MUser.new(@current_user)
     @email = @m_usering.email
     @m_user = @current_user["name"]
@@ -27,6 +28,8 @@ class ApplicationController < ActionController::Base
     @direct_msgcounts = response["direct_msgcounts"]
     @all_unread_count = response["all_unread_count"]
     @m_channelsids = response["m_channelsids"]
+    @direct_draft_status_counts = response["direct_draft_status_counts"]
+    @group_draft_status_counts = response["group_draft_status_counts"]
 
     session[:current_user_id] = @current_user_id
     session[:m_channels] = response["m_channels"]
@@ -35,7 +38,7 @@ class ApplicationController < ActionController::Base
     # session[:m_p_channels] = response["m_p_channels"]
     # session[:m_channelsids] = response["m_channelsids"]
     session[:m_user] = @current_user["name"]
-    session[:workspace_id] = @workspace_id
+    session[:workspace_id] = @workspace_id    
   end
 
   def retrieve_direct_message

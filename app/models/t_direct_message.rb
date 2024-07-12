@@ -3,6 +3,7 @@ class TDirectMessage
 
   attr_accessor :directmsg
   attr_accessor :read_status
+  attr_accessor :draft_message_status
   attr_accessor :send_user_id
   attr_accessor :receive_user_id
   attr_accessor :created_at

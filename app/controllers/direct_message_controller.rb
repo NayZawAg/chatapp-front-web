@@ -11,17 +11,18 @@ class DirectMessageController < ApplicationController
   def show
     #check unlogin user
     checkuser
-
+    message = params[:session][:message]
+    draft_status = params[:session][:draft_status]
     if session[:s_user_id].nil?
       redirect_to home_url
     elsif params[:session][:message].blank?
       redirect_to m_user_path(session[:s_user_id])
     else
-      message = params[:session][:message]
       data = {
         "message": message,
         "user_id": session[:current_user_id],
-        "s_user_id": session[:s_user_id]
+        "s_user_id": session[:s_user_id],
+        "draft_message_status": draft_status,
       };
      
       post_data("/directmsg", data)
@@ -33,7 +34,6 @@ class DirectMessageController < ApplicationController
   def showthread
     #check unlogin user
      checkuser
-
     if session[:s_direct_message_id].nil?
       unless session[:s_user_id].nil?
         redirect_to m_user_path(session[:s_user_id])
@@ -47,7 +47,8 @@ class DirectMessageController < ApplicationController
         "s_direct_message_id": session[:s_direct_message_id],
         "s_user_id": session[:s_user_id],
         "message": params[:session][:message],
-        "user_id": session[:current_user_id]
+        "user_id": session[:current_user_id],
+        "draft_message_status": params[:session][:draft_status],
       };
         post_data("/directthreadmsg", data)
         redirect_to t_direct_message_path(session[:s_direct_message_id])
@@ -99,7 +100,7 @@ class DirectMessageController < ApplicationController
   end
 
   def update
-    if params[:action_type] == 'send'
+    if params[:action_type] == 'send' || params[:session][:draft_status] 
       id = params[:id]
       message = params[:session][:message]
       data = {
@@ -108,7 +109,7 @@ class DirectMessageController < ApplicationController
       }
       post_data( "/update_directmsg", data)
       redirect_to m_user_path(session[:s_user_id])
-    else 
+    else
       redirect_to m_user_path(session[:s_user_id])
     end
   end
@@ -127,7 +128,7 @@ class DirectMessageController < ApplicationController
   end
 
   def update_thread
-    if params[:action_type] == 'send'
+    if params[:action_type] == 'send' || params[:session][:draft_status]
       id = params[:id]
       message = params[:session][:message]
       data = {
