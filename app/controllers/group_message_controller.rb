@@ -11,11 +11,13 @@ class GroupMessageController < ApplicationController
       redirect_to m_channel_path(session[:s_channel_id])
     else
       message = params[:session][:message]
+      draft_status = params[:session][:draft_status]
       mention_name =params[:session][:memtion_name] 
       data = {
         "message": message,
         "s_channel_id": session[:s_channel_id],
-        "mention_name": [mention_name]
+        "mention_name": [mention_name],
+        "draft_message_status": draft_status,
       };
       post_data("/groupmsg", data)
      
@@ -34,13 +36,14 @@ class GroupMessageController < ApplicationController
       redirect_to t_group_message_path(session[:s_group_message_id])
     else
       message = params[:session][:message]
+      draft_status = params[:session][:draft_status]
       memtion_name = params[:session][:memtion_name] 
       data = {
         "s_group_message_id": session[:s_group_message_id],
         "s_channel_id": session[:s_channel_id],
         "message": message,
-        "mention_name": [memtion_name]
-       
+        "mention_name": [memtion_name],
+        "draft_message_status": draft_status,
       };
       post_data("/groupthreadmsg", data)
       redirect_to t_group_message_path(session[:s_group_message_id])
@@ -59,7 +62,7 @@ class GroupMessageController < ApplicationController
   def deletethread
     if session[:s_channel_id].nil?
       redirect_to home_url
-    else  
+    else
       get_data("/delete_groupthread?s_channel_id=#{session[:s_channel_id]}&id=#{params[:id]}&s_group_message_id=#{session[:s_group_message_id]}")
       redirect_to t_group_message_path(session[:s_group_message_id])
     end
@@ -80,7 +83,7 @@ class GroupMessageController < ApplicationController
   end
 
   def update
-    if params[:action_type] == 'send'
+    if params[:action_type] == 'send' || params[:session][:draft_status]
       id = params[:id]
       message = params[:session][:message]
       data = {
@@ -108,7 +111,7 @@ class GroupMessageController < ApplicationController
   end
   
   def update_thread
-    if params[:action_type] == 'send'
+    if params[:action_type] == 'send' || params[:session][:draft_status]
       id = params[:id]
       message = params[:session][:message]
       data = {
@@ -121,5 +124,4 @@ class GroupMessageController < ApplicationController
       redirect_to t_group_message_path(session[:s_group_message_id])
     end
   end
-
 end

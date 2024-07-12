@@ -22,31 +22,32 @@
     <hr>
 
     <% @t_group_threads.each do |t_group_thread| %>
-      <p class="style21"><%= @count += 1 %></p>
+      <% if !t_group_thread['draft_message_status'] %>
+        <p class="style21"><%= @count += 1 %></p>
 
-      <p class="style22"><strong><%= t_group_thread['name']%></strong></p>
+        <p class="style22"><strong><%= t_group_thread['name']%></strong></p>
 
-      <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-      <p class="style24"></p>
+        <p class="style24"></p>
 
-      <% if session[:current_user_id] == t_group_thread['send_user_id'] %>
-        <p class="style22">
-          <%= link_to "", edit_groupthreadmsg_path(id: t_group_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
-        </p>
+        <% if session[:current_user_id] == t_group_thread['send_user_id'] %>
+          <p class="style22">
+            <%= link_to "", edit_groupthreadmsg_path(id: t_group_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
+          </p>
+        <% end %>
+
+        <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
+          <%= link_to "", groupunstarthread_path(:id => t_group_thread['id']), class:'fas fa-star' %></li>
+        <% else %>
+          <%= link_to "", groupstarthread_path(:id => t_group_thread['id']), class:'far fa-star'%></li>
+        <% end %> 
+
+        <% if session[:current_user_id] == t_group_thread["send_user_id"] %>
+          <%= link_to "", delete_groupthread_path(:id => t_group_thread['id']), class:'glyphicon glyphicon-trash'%>
+        <% end %>
+        <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_group_thread['groupthreadmsg'])%></div>
       <% end %>
-
-      <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
-        <%= link_to "", groupunstarthread_path(:id => t_group_thread['id']), class:'fas fa-star' %></li>
-      <% else %>
-        <%= link_to "", groupstarthread_path(:id => t_group_thread['id']), class:'far fa-star'%></li>
-      <% end %> 
-
-      <% if session[:current_user_id] == t_group_thread["send_user_id"] %>
-        <%= link_to "", delete_groupthread_path(:id => t_group_thread['id']), class:'glyphicon glyphicon-trash'%>
-      <% end %>
-      <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_group_thread['groupthreadmsg'])%></div>
-
     <% end %>
   </div>
 </div>
@@ -75,12 +76,13 @@
       </div>
 
       <%= form_for(:session, url: groupthreadmsg_path) do |f| %>
-        <div class="col-md-11">
+        <div class="col-md-11" draftData="<%= @t_group_threads.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
           <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: '@' + t['name'] } }.to_json %>"></div>
           <%= f.hidden_field :message, id: 'quill-content' %>
         </div>
         <div class="col-md-1 mt-10">
-          <%= f.submit "Send", class: "btn btn-primary sendbtn" %>
+          <%= f.hidden_field :draft_status, value:false %>  
+          <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
         </div>
         <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
       <% end %>
@@ -168,6 +170,92 @@
       placeholder: 'Type your message here ...',
 			theme: 'snow'
     });
+
+    var senderId = $('#form').data('sender-id');
+    var t_group_threads = JSON.parse($('#form').attr('draftData'));
+    var draft_message_arr = t_group_threads.find((t_group_thread)=>{
+      return (t_group_thread.send_user_id == senderId && t_group_thread.draft_message_status);
+    });
+    var isClickSendButton = false;
+    var isSaveDraft = true;
+    if (draft_message_arr != undefined ) {
+      var draftedMessage = draft_message_arr.groupthreadmsg;
+      var draftSenderId = draft_message_arr.m_user_id;
+      var draftedMessageId = draft_message_arr.id;
+      isSaveDraft = false;    
+    }
+    quill.setContents([{
+      insert: draftedMessage,
+    }]);
+    document.querySelector('#send_btn').addEventListener('click', function() {
+      isClickSendButton = true;
+    });
+
+    $(window).bind('beforeunload', () => {
+      var messageContent = quill.getText().trim();
+      if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          type: 'POST',
+          url: '<%= groupthreadmsg_path %>',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          dataType: 'json',
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+        });
+      }
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          id: draftedMessageId,
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          url: '<%= update_groupthreadmsg_path %>',
+          contentType: 'application/json',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(formData),
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (!isClickSendButton && messageContent.length == 0) {
+        $.ajax({
+          url: '<%= delete_groupthread_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: draftedMessageId},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (isClickSendButton) {
+        var delete_draft_massage_id = draft_message_arr.id;
+        $.ajax({
+          url: '<%= delete_groupthread_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: delete_draft_massage_id},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+    }); 
 
     // highlight start
     var isHighlighting = false;
@@ -336,7 +424,6 @@
       htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
     }
-
 
     // for mention select 
     $( "#editor" ).autocomplete({

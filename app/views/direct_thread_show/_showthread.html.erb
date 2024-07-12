@@ -1,4 +1,3 @@
-
 <div id="main">
   <div>
     <div class="title">
@@ -16,24 +15,26 @@
     <h2 class="style1">Reply</h2>
     <hr>
     <% @t_direct_threads.each do |t_direct_thread| %>
-      <p class="style21"><%= @count += 1 %></p>
-      <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
-      <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p> 
-      <% if session[:m_user] == t_direct_thread['name'] %>
-        <p class="style22">
-					<%= link_to "", edit_directthreadmsg_path(id: t_direct_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
-        </p>
+      <% if !t_direct_thread['draft_message_status'] %>
+        <p class="style21"><%= @count += 1 %></p>
+        <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
+        <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style24"></p> 
+        <% if session[:m_user] == t_direct_thread['name'] %>
+          <p class="style22">
+            <%= link_to "", edit_directthreadmsg_path(id: t_direct_thread['id']), class: 'far fa-edit', id: 'editbtn'%>
+          </p>
+        <% end %>
+        <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
+          <%= link_to "", unstarthread_path(:id => t_direct_thread['id']), class:'fas fa-star' %></li>
+        <% else %>
+          <%= link_to "", starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
+        <% end %>
+        <% if session[:m_user] == t_direct_thread['name'] %>
+          <%= link_to "", delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash' %>
+        <% end %>
+        <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread['directthreadmsg'])%></div>
       <% end %>
-      <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
-        <%= link_to "", unstarthread_path(:id => t_direct_thread['id']), class:'fas fa-star' %></li>
-      <% else %>
-        <%= link_to "", starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
-      <% end %>
-      <% if session[:m_user] == t_direct_thread['name'] %>
-        <%= link_to "", delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash' %>
-      <% end %>
-      <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread['directthreadmsg'])%></div>         
     <% end %>
   </div>
 </div>
@@ -59,12 +60,13 @@
       <button id="link-save">Yes</button>
     </div>
     <%= form_for(:session, url: directthreadmsg_path) do |f| %>
-      <div class="col-md-11">
+      <div class="col-md-11" draftData="<%= @t_direct_threads.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
         <div id="editor"></div>
         <%= f.hidden_field :message, id: 'quill-content' %>
       </div>
       <div class="col-md-1 mt-10">
-        <%= f.submit "Send", class: "btn btn-primary sendbtn" %>
+        <%= f.hidden_field :draft_status, value:false %>  
+        <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn"%>
       </div>
     <% end %>
     <div class="col-md-11">
@@ -143,10 +145,97 @@
       theme: 'snow'
     });
 
+    var senderId = $('#form').data('sender-id');
+    var t_direct_threads = JSON.parse($('#form').attr('draftData'));
+    var draft_message_arr = t_direct_threads.find((t_direct_thread)=>{
+      return (t_direct_thread.m_user_id == senderId && t_direct_thread.draft_message_status);
+    });
+    var isClickSendButton = false;
+    var isSaveDraft = true;
+    if (draft_message_arr != undefined ) {
+      var draftedMessage = draft_message_arr.directthreadmsg;
+      var draftSenderId = draft_message_arr.m_user_id;
+      var draftedMessageId = draft_message_arr.id;
+      isSaveDraft = false;
+    }
+    quill.setContents([{
+      insert: draftedMessage,
+    }]);
+
+    document.querySelector('#send_btn').addEventListener('click', function() {
+      isClickSendButton = true;
+    });
+
+    $(window).bind('beforeunload', () => {
+      var messageContent = quill.getText().trim();
+      if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          type: 'POST',
+          url: '<%= directthreadmsg_path %>',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          dataType: 'json',
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+        });
+      }
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          id: draftedMessageId,
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          url: '<%= update_directthreadmsg_path %>',
+          contentType: 'application/json',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(formData),
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (!isClickSendButton && messageContent.length == 0) {
+        $.ajax({
+          url: '<%= delete_directthread_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: draftedMessageId},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (isClickSendButton) {
+        var delete_draft_massage_id = draft_message_arr.id;
+        $.ajax({
+          url: '<%= delete_directthread_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: delete_draft_massage_id},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+    });
+
     // highlight start
     var isHighlighting = false;
     function updateButtonText() {
-      if(isHighlighting){
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -187,7 +276,7 @@
     // codeblock start 
     var isCodeblocking = false;
     function updateCodeBtn() {
-      if(isCodeblocking){
+      if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
         btns.forEach(btn => btn.disabled = true);
@@ -218,7 +307,7 @@
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
-      if(!isHighlighting){
+      if (!isHighlighting) {
         toggleCodeblock();
       }else{
         quill.focus();
@@ -244,7 +333,7 @@
     quill.on('selection-change', function(range, oldRange, source) {
       if (range && range.length > 0) {
         var selectedText = quill.getText(range.index, range.length);
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
         $('#link-name').val(selectedText);
