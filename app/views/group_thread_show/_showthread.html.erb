@@ -212,7 +212,7 @@
           },
         });
       }
-      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft){
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
         var draftStatus = true;
         var formData = {
           id: draftedMessageId,
@@ -240,7 +240,7 @@
           data:{id: draftedMessageId},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
+          }
         });
       }
       else if (isClickSendButton) {
@@ -252,8 +252,8 @@
           data:{id: delete_draft_massage_id},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
-        });       
+          }
+        });
       }
     }); 
 
@@ -424,7 +424,6 @@
       htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
     }
-
 
     // for mention select 
     $( "#editor" ).autocomplete({

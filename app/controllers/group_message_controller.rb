@@ -43,7 +43,7 @@ class GroupMessageController < ApplicationController
         "s_channel_id": session[:s_channel_id],
         "message": message,
         "mention_name": [memtion_name],
-        "draft_message_status": draft_status,       
+        "draft_message_status": draft_status,
       };
       post_data("/groupthreadmsg", data)
       redirect_to t_group_message_path(session[:s_group_message_id])
@@ -62,7 +62,7 @@ class GroupMessageController < ApplicationController
   def deletethread
     if session[:s_channel_id].nil?
       redirect_to home_url
-    else  
+    else
       get_data("/delete_groupthread?s_channel_id=#{session[:s_channel_id]}&id=#{params[:id]}&s_group_message_id=#{session[:s_group_message_id]}")
       redirect_to t_group_message_path(session[:s_group_message_id])
     end
@@ -124,5 +124,4 @@ class GroupMessageController < ApplicationController
       redirect_to t_group_message_path(session[:s_group_message_id])
     end
   end
-
 end

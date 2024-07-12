@@ -1,11 +1,11 @@
 <div id="main">
-       
+
   <div class = "txtmsg">	
     <% @count = 0 %>
     <%= render 'direct_show/directmsglists' %>
     <div class = "textboxbg">
       <div class="textboxeditor">
-              
+
         <div id="toolbar">
           <button class="ql-bold disable"></button>
           <button class="ql-italic disable"></button>
@@ -25,16 +25,16 @@
           <button id="link-cancel">Cancel</button>
           <button id="link-save">Yes</button>
         </div>
-            
+
         <%= form_for(:session, url: directmsg_path) do |f| %>
-          <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">                  
-            <div id="editor"></div>  
-            <%= f.hidden_field :message, id: 'quill-content' %>  
-            <%= f.hidden_field :draft_status, value:false %>  
+          <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
+            <div id="editor"></div>
+            <%= f.hidden_field :message, id: 'quill-content' %>
+            <%= f.hidden_field :draft_status, value:false %>
           </div>
           <div class="col-md-1 mt-10">
             <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
-          </div>              
+          </div>
         <% end %>
 
         <div class="col-md-11">
@@ -98,7 +98,7 @@
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote'],
     ];
-  
+
     const quill = new Quill('#editor', {
       modules: {
         toolbar: {
@@ -159,7 +159,7 @@
           },
         });
       }
-      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft){
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
         var draftStatus = true;
         var formData = {
           id: draftedMessageId,
@@ -199,17 +199,16 @@
           data:{id: delete_draft_massage_id},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
-        });       
+          }
+        });
       }
-    });   
+    });
 
     // highlight start
     var isHighlighting = false;
 
     function updateButtonText() {
-       
-      if(isHighlighting) {
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -236,7 +235,7 @@
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {     
-      if(!isCodeblocking) {
+      if (!isCodeblocking) {
         toggleHighlight();
       } else {
         quill.focus();
@@ -252,7 +251,7 @@
     var isCodeblocking = false;
 
     function updateCodeBtn() {   
-      if(isCodeblocking){
+      if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
         btns.forEach(btn => btn.disabled = true);
@@ -283,7 +282,7 @@
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
-      if(!isHighlighting) {
+      if (!isHighlighting) {
         toggleCodeblock();
       } else {
         quill.focus();
@@ -311,7 +310,7 @@
       if (range && range.length > 0) {
         var selectedText = quill.getText(range.index, range.length);
 
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
 
@@ -381,7 +380,7 @@
         sendbtn.disabled = true;
       }
     });
-       
-  });
+
+});
 
 </script>

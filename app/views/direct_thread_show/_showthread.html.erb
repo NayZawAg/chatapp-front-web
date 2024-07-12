@@ -1,4 +1,3 @@
-
 <div id="main">
   <div>
     <div class="title">
@@ -34,7 +33,7 @@
         <% if session[:m_user] == t_direct_thread['name'] %>
           <%= link_to "", delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash' %>
         <% end %>
-        <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread['directthreadmsg'])%></div>         
+        <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread['directthreadmsg'])%></div>
       <% end %>
     <% end %>
   </div>
@@ -157,7 +156,7 @@
       var draftedMessage = draft_message_arr.directthreadmsg;
       var draftSenderId = draft_message_arr.m_user_id;
       var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;    
+      isSaveDraft = false;
     }
     quill.setContents([{
       insert: draftedMessage,
@@ -188,7 +187,7 @@
           },
         });
       }
-      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft){
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
         var draftStatus = true;
         var formData = {
           id: draftedMessageId,
@@ -216,7 +215,7 @@
           data:{id: draftedMessageId},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
+          }
         });
       }
       else if (isClickSendButton) {
@@ -228,15 +227,15 @@
           data:{id: delete_draft_massage_id},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
-        });       
+          }
+        });
       }
-    });  
+    });
 
     // highlight start
     var isHighlighting = false;
     function updateButtonText() {
-      if(isHighlighting){
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -277,7 +276,7 @@
     // codeblock start 
     var isCodeblocking = false;
     function updateCodeBtn() {
-      if(isCodeblocking){
+      if (isCodeblocking) {
         document.querySelector('#code-block').classList.add('active');
         var btns = document.querySelectorAll(".disable");
         btns.forEach(btn => btn.disabled = true);
@@ -308,7 +307,7 @@
     });
 
     document.querySelector('#code-block').addEventListener('click', function() {
-      if(!isHighlighting){
+      if (!isHighlighting) {
         toggleCodeblock();
       }else{
         quill.focus();
@@ -334,7 +333,7 @@
     quill.on('selection-change', function(range, oldRange, source) {
       if (range && range.length > 0) {
         var selectedText = quill.getText(range.index, range.length);
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
         $('#link-name').val(selectedText);

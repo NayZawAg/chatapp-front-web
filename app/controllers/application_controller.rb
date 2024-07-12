@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     # session[:m_p_channels] = response["m_p_channels"]
     # session[:m_channelsids] = response["m_channelsids"]
     session[:m_user] = @current_user["name"]
-    session[:workspace_id] = @workspace_id    
+    session[:workspace_id] = @workspace_id
   end
 
   def retrieve_direct_message
