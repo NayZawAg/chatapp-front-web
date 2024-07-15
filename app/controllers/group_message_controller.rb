@@ -12,15 +12,20 @@ class GroupMessageController < ApplicationController
     else
       message = params[:session][:message]
       draft_status = params[:session][:draft_status]
-      mention_name =params[:session][:memtion_name] 
+      mention_name = params[:session][:memtion_name]
+      if mention_name.present?
+        mention_names = JSON.parse(mention_name)
+      else
+        mention_names = []
+      end
       data = {
         "message": message,
         "s_channel_id": session[:s_channel_id],
-        "mention_name": [mention_name],
+        "mention_name": mention_names,
         "draft_message_status": draft_status,
-      };
+      }
       post_data("/groupmsg", data)
-     
+
       redirect_to m_channel_path(session[:s_channel_id])
     end
   end
@@ -37,14 +42,19 @@ class GroupMessageController < ApplicationController
     else
       message = params[:session][:message]
       draft_status = params[:session][:draft_status]
-      memtion_name = params[:session][:memtion_name] 
+      mention_name = params[:session][:memtion_name]
+      if mention_name.present?
+        mention_names = JSON.parse(mention_name)
+      else
+        mention_names = []
+      end
       data = {
         "s_group_message_id": session[:s_group_message_id],
         "s_channel_id": session[:s_channel_id],
         "message": message,
-        "mention_name": [memtion_name],
+        "mention_name": mention_names,
         "draft_message_status": draft_status,
-      };
+      }
       post_data("/groupthreadmsg", data)
       redirect_to t_group_message_path(session[:s_group_message_id])
     end
@@ -53,7 +63,7 @@ class GroupMessageController < ApplicationController
   def deletemsg
     if session[:s_channel_id].nil?
       redirect_to home_url
-    else  
+    else
       get_data("/delete_groupmsg?s_channel_id=#{session[:s_channel_id]}&id=#{params[:id]}&user_id=#{session[:current_user_id]}")
       redirect_to m_channel_path(session[:s_channel_id])
     end
@@ -68,7 +78,7 @@ class GroupMessageController < ApplicationController
     end
   end
 
-  # edit message 
+  # edit message
   def edit
     if params[:id].nil?
       redirect_to home_url
@@ -76,6 +86,7 @@ class GroupMessageController < ApplicationController
       response = get_data("/groupmsg/edit/#{params[:id]}")
       @dataraw = response["message"]["groupmsg"]
       @data = sanitize(@dataraw, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
+      @mention_users = response["mentionusers"]
       retrieve_group_message
       retrievehome
       render "group_show/_edit"
@@ -83,14 +94,21 @@ class GroupMessageController < ApplicationController
   end
 
   def update
-    if params[:action_type] == 'send' || params[:session][:draft_status]
+    if params[:action_type] == "send" || params[:session][:draft_status]
       id = params[:id]
       message = params[:session][:message]
+      mention_name = params[:session][:memtion_name]
+      if mention_name.present?
+        mention_names = JSON.parse(mention_name)
+      else
+        mention_names = []
+      end
       data = {
         id: id,
-        message: message
+        message: message,
+        mention_name: mention_names,
       }
-      post_data( "update_groupmsg", data)
+      post_data("update_groupmsg", data)
       redirect_to m_channel_path(session[:s_channel_id])
     else
       redirect_to m_channel_path(session[:s_channel_id])
@@ -104,21 +122,29 @@ class GroupMessageController < ApplicationController
       response = get_data("/groupthreadmsg/edit/#{params[:id]}")
       @dataraw = response["message"]["groupthreadmsg"]
       @data = sanitize(@dataraw, tags: %w(p span div br strong em a blockquote s ul ol li), attributes: %w(href class style))
+      @mthread_users = response["mthreadusers"]
       retrieve_group_thread
       retrievehome
       render "group_thread_show/_editthread"
     end
   end
-  
+
   def update_thread
-    if params[:action_type] == 'send' || params[:session][:draft_status]
+    if params[:action_type] == "send" || params[:session][:draft_status]
       id = params[:id]
       message = params[:session][:message]
+      mention_name = params[:session][:memtion_name]
+      if mention_name.present?
+        mention_names = JSON.parse(mention_name)
+      else
+        mention_names = []
+      end
       data = {
         id: id,
-        message: message
+        message: message,
+        mention_name: mention_names,
       }
-      post_data( "update_groupthreadmsg", data)
+      post_data("update_groupthreadmsg", data)
       redirect_to t_group_message_path(session[:s_group_message_id])
     else
       redirect_to t_group_message_path(session[:s_group_message_id])
