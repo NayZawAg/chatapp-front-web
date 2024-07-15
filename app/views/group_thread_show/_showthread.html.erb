@@ -23,7 +23,7 @@
 
       <% @t_group_threads.each do |t_group_thread| %>
         <% if !t_group_thread["draft_message_status"] %>
-          <p class="style21"><%= @count += 1 %></p>
+        
 
           <p class="style22"><strong><%= t_group_thread["name"] %></strong></p>
 
@@ -136,7 +136,10 @@
 </div>
 
 <script>
-
+  if (!sessionStorage.getItem('reloaded')) {
+    sessionStorage.setItem('reloaded', 'true');
+    location.reload();
+  }
   // highlight
   var Inline = Quill.import('blots/inline');
 
@@ -205,6 +208,7 @@
     });
 
     $(window).bind('beforeunload', () => {
+      sessionStorage.removeItem('reloaded');
       var messageContent = quill.getText().trim();
       if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
         var draftStatus = true;
