@@ -1,10 +1,10 @@
 <div id="main">
-  <div class = "txtmsg">	
+  <div class = "txtmsg">
     <% @count = 0 %>
     <%= render "direct_show/directmsglists" %>
     <div class = "textboxbg">
       <div class="textboxeditor">
-              
+
         <div id="toolbar">
           <button class="ql-bold"></button>
           <button class="ql-italic"></button>
@@ -24,7 +24,7 @@
           <button id="link-cancel">Cancel</button>
           <button id="link-save">Yes</button>
         </div>
-            
+
         <div class="editmsg">
           <%= form_for(:session, url: update_directmsg_path) do |f| %>
             <div class="col-md-10">
@@ -85,7 +85,7 @@
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote','code-block'],
     ];
-  
+
     const quill = new Quill('#editor', {
       modules: {
         toolbar: {
@@ -104,12 +104,11 @@
       theme: 'snow'
     });
 
-
     // highlight start
     var isHighlighting = false;
 
     function updateButtonText() {
-      if(isHighlighting) {
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -151,19 +150,19 @@
         updateButtonText();
       }
     });
-        
+
     // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
       if (range && range.length > 0) {
         var selectedText = quill.getText(range.index, range.length);
 
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
 
         $('#link-name').val(selectedText);
-      } 
+      }
     });
 
     function showLinkDialog(range) {
@@ -179,7 +178,7 @@
           }
           quill.setSelection(range.index + linkText.length, 0);
           hideLinkDialog();
-        } 
+        }
       };
 
       document.getElementById('link-cancel').onclick = function() {
@@ -232,7 +231,6 @@
         sendbtn.disabled = true;
       }
     });
-
 
     // take value in text 
     // var data = '<%= j @data %>'

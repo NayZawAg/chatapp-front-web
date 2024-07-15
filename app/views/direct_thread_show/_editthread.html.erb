@@ -1,4 +1,3 @@
-
 <div id="main">
   <div>
     <div class="title">
@@ -7,31 +6,31 @@
     <hr>
     <p class="style21">1</p>
     <p class="style22"><strong><%= @sender_name %></strong></p>
-    <p class="style23"><%= (@t_direct_message["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>     
+    <p class="style23"><%= (@t_direct_message["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
     <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(@t_direct_message["directmsg"]) %></div>
   </div>
   <hr>
   <div class="txtmsg">
     <% @count = 0 %>
     <h2 class="style1">Reply</h2>
-    <hr>   
+    <hr>
     <% @t_direct_threads.each do |t_direct_thread| %>
       <p class="style21"><%= @count += 1 %></p>
       <p class="style22"><strong><%= t_direct_thread["name"] %></strong></p>
       <p class="style23"><%= (t_direct_thread["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
-      <p class="style24"></p> 
+      <p class="style24"></p>
       <% if session[:m_user] == t_direct_thread["name"] %>
         <p class="style22">
 					<%= link_to "", edit_directthreadmsg_path(id: t_direct_thread["id"]), class: "far fa-edit", id: "editbtn" %>
         </p>
-      <% end %>  
+      <% end %>
       <% if @t_direct_star_thread_msgids.include? t_direct_thread["id"] %>
         <%= link_to "", unstarthread_path(:id => t_direct_thread["id"]), class: "fas fa-star" %></li>
       <% else %>
         <%= link_to "", starthread_path(:id => t_direct_thread["id"]), class: "far fa-star" %></li>
-      <% end %>       
+      <% end %>
       <%= link_to "", delete_directthread_path(:id => t_direct_thread["id"]), class: "glyphicon glyphicon-trash" %>
-      <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread["directthreadmsg"]) %></div>         
+      <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread["directthreadmsg"]) %></div>
     <% end %>
   </div>
 </div>
@@ -59,7 +58,7 @@
 
     <%= form_for(:session, url: update_directthreadmsg_path) do |f| %>
       <div class="col-md-10">
-        <div id="editor"></div>  
+        <div id="editor"></div>
         <%= f.hidden_field :message, id: "quill-content" %>
 				<%= hidden_field_tag :id, params[:id] %>
         <%= hidden_field_tag :action_type, "", id: "threadaction" %>
@@ -132,7 +131,7 @@
     // highlight start
     var isHighlighting = false;
     function updateButtonText() {
-      if(isHighlighting){
+      if (isHighlighting) {
         document.querySelector('#highlight-text').classList.add('active');
       } else {
         document.querySelector('#highlight-text').classList.remove('active');
@@ -173,13 +172,13 @@
         updateButtonText();
       }
     });
-        
+
     // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
       if (range && range.length > 0) {
         var selectedText = quill.getText(range.index, range.length);
-        if(selectedText){
+        if (selectedText) {
           $('#toolbar').removeClass("hidden");
         }
         $('#link-name').val(selectedText);

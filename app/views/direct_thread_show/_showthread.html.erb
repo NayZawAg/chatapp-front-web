@@ -32,7 +32,7 @@
         <% if session[:m_user] == t_direct_thread["name"] %>
           <%= link_to "", delete_directthread_path(:id => t_direct_thread["id"]), class: "glyphicon glyphicon-trash style22" %>
         <% end %>
-        <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread["directthreadmsg"]) %></div>         
+        <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread["directthreadmsg"]) %></div>
         <div class="reactionBox">
           <% if @t_direct_react_thread_msgids.include? t_direct_thread["id"] %> <!-- Check if there is data in the table -->
             <% userNames = [] %>
@@ -47,13 +47,13 @@
                       <% userNames << react_userName["name"] %>
                     <% end %>
                     <% userIds << react_userName["userid"] %>
-                  <% end %>   
+                  <% end %>
                 <% end %>
                 <% if userIds.include? @current_user["id"] %>
                   <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_direct_thread["id"] %>" data-message-id="<%= t_direct_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
                     <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directthreadreact_path(thread_id: t_direct_thread["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
                   </button>
-                <% else %>  
+                <% else %>
                   <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_direct_thread["id"] %>" data-message-id="<%= t_direct_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
                     <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directthreadreact_path(thread_id: t_direct_thread["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
                   </button>
@@ -371,7 +371,7 @@
 <!-- emoji button -->
 <script>
   window.scrollTo(0, document.body.scrollHeight);
-	document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     const picker = new EmojiButton();
     document.querySelectorAll('.emoji-button').forEach(button => {
       button.addEventListener('click', (event) => {
@@ -409,12 +409,12 @@
           });
         });
       });
-	  });
+    });
     // Initialize all tooltips
-    $(document).ready(function(){
+    $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip(
         {container:'body', trigger: 'hover', placement:"top"}
-      );   
+      );
     });
   });
 </script>

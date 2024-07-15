@@ -1,6 +1,6 @@
 <div id="main">
 
-  <div class = "txtmsg">	
+  <div class = "txtmsg">
     <% @count = 0 %>
     <%= render "direct_show/directmsglists" %>
     <div class = "textboxbg">
@@ -110,7 +110,7 @@
       var draftedMessage = draft_message_arr.directmsg;
       var draftSenderId = draft_message_arr.send_user_id;
       var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;    
+      isSaveDraft = false;
     }
     quill.setContents([{
       insert: draftedMessage,
@@ -169,7 +169,7 @@
           data:{id: draftedMessageId},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
+          }
         });
       }
       else if (isClickSendButton) {
@@ -216,7 +216,7 @@
         updateButtonText();
     });
 
-    document.querySelector('#highlight-text').addEventListener('click', function() {     
+    document.querySelector('#highlight-text').addEventListener('click', function() {
       toggleHighlight();
       var htmlContent = quill.getSemanticHTML();
       document.querySelector('#quill-content').value = htmlContent;
@@ -224,7 +224,7 @@
 
     updateButtonText();
     // highlight end
-        
+
     // highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -232,7 +232,7 @@
         updateButtonText();
       }
     });
-        
+
     // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
@@ -244,7 +244,7 @@
         }
 
         $('#link-name').val(selectedText);
-      } 
+      }
     });
 
     function showLinkDialog(range) {
@@ -259,7 +259,7 @@
             quill.deleteText(range.index + linkText.length, range.length);
           }
             quill.setSelection(range.index + linkText.length, 0);
-             
+
           hideLinkDialog();
         } 
       };

@@ -30,7 +30,7 @@
             <%= f.hidden_field :message, id: "quill-content" %>
           </div>
           <div class="col-md-1 mt-10">
-            <%= f.hidden_field :draft_status, value: false %>  
+            <%= f.hidden_field :draft_status, value: false %>
             <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
           </div>
           <%= f.hidden_field :memtion_name, class: "memtion_name" %>
@@ -112,7 +112,7 @@
       var draftedMessage = draft_message_arr.groupmsg;
       var draftSenderId = draft_message_arr.send_user_id;
       var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;    
+      isSaveDraft = false;
     }
     quill.setContents([{
       insert: draftedMessage,
@@ -170,7 +170,7 @@
           data:{id: draftedMessageId},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
+          }
         });
       }
       else if (isClickSendButton) {
@@ -182,8 +182,8 @@
           data:{id: delete_draft_massage_id},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
-        });       
+          }
+        });
       }
     });
 
@@ -369,7 +369,6 @@
       });
       }
     });
-    
 
     // validate btn
     var sendbtn = document.querySelector(".sendbtn");
