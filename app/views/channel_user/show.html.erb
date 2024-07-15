@@ -35,7 +35,6 @@
     <% end %>
     <div>
       <div class="col-md-4" id="cuserlist">
-        <p class="style21">番号 </p>
       </div>
 
       <div class="col-md-2" >
@@ -52,7 +51,13 @@
 
       <% @m_channel_users.each do |c_user| %>
         <div class="col-md-4" id="cuserlist">
-          <p class="style21"><%= @count += 1 %></p>
+          <% if c_user['profile_image'].present? %>
+              <img src="<%= c_user['profile_image'] %>" alt="Profile Image" class="profile-image" style="display: inline-block; margin-left: 250px; margin-top: 5px;">
+          <% else %>
+              <div class="profile-placeholder" style="display: inline-block; margin-left: 250px; margin-top: 5px;">
+              <%= c_user['name'][0].upcase %>
+              </div>
+          <% end %>
         </div>
 
         <div class="col-md-2" >

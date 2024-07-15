@@ -1,5 +1,6 @@
 class MUser
   include ActiveModel::Model
+  include ActiveModel::Attributes
 
   attr_accessor :id
   attr_accessor :name
@@ -13,5 +14,7 @@ class MUser
   attr_accessor :member_status
   attr_accessor :created_at
   attr_accessor :updated_at
+
+  attribute :profile_image_url, :string
 
 end

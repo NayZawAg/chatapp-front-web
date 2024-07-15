@@ -1,13 +1,19 @@
 <div id="main">
   <div>
     <div class="title">
-      <h2 class="style1"><%= @s_user["name"] %> </h2>
+      <h2 style="margin-left: 250px;"><%= @s_user["name"] %> </h2>
     </div>
     <hr>
-    <p class="style21">1</p>
-    <p class="style22"><strong><%= @sender_name %></strong></p>
-    <p class="style23"><%= (@t_direct_message["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
-    <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(@t_direct_message["directmsg"]) %></div>
+    <% if @send_user['image_url'].present? %>
+        <img src="<%= @send_user['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= @send_user['name'][0].upcase %>
+        </div>
+    <% end %>  
+    <p class="style22"><strong><%= @send_user['name'] %></strong></p>
+    <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+    <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(@t_direct_message['directmsg'])%></div>
   </div>
   <hr>
   <div class="txtmsg">
@@ -15,10 +21,16 @@
     <h2 class="style1">Reply</h2>
     <hr>
     <% @t_direct_threads.each do |t_direct_thread| %>
-      <% if !t_direct_thread["draft_message_status"] %>
-        <p class="style21"><%= @count += 1 %></p>
-        <p class="style22"><strong><%= t_direct_thread["name"] %></strong></p>
-        <p class="style23"><%= (t_direct_thread["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+      <% if !t_direct_thread['draft_message_status'] %>
+        <% if t_direct_thread['image_url'].present? %>
+        <img src="<%= t_direct_thread['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= t_direct_thread['name'][0].upcase %>
+        </div>
+      <% end %>  
+        <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
+        <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
         <p class="style24"></p> 
         <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { thread_id: t_direct_thread["id"] }, style: "text-decoration:none;" %>
         <% if @t_direct_star_thread_msgids.include? t_direct_thread["id"] %>
@@ -217,7 +229,7 @@
           }
         });
       }
-      else if (!isClickSendButton && messageContent.length == 0) {
+      else if (!isClickSendButton && messageContent.length === 0) {
         $.ajax({
           url: '<%= delete_directthread_path %>',
           type: 'GET',
@@ -228,7 +240,7 @@
           }
         });
       }
-      else if (isClickSendButton) {
+      else if (isClickSendButton && draft_message_arr) {
         var delete_draft_massage_id = draft_message_arr.id;
         $.ajax({
           url: '<%= delete_directthread_path %>',

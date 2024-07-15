@@ -80,12 +80,30 @@ class MUsersController < ApplicationController
     end
   end
 
+  def profile_upload
+    user_id = params[:user_id]
+    image_data = params[:image][:data]
+    mime_type = params[:image][:mime]
 
+    data = {
+      "user_id": user_id,
+      "image": {
+        "data": image_data,
+        "mime": mime_type
+      }
+    }
 
+    result = post_data("/profile_update", data)
 
-
-
-
+    if result.nil?
+      flash.now[:danger] = 'Profile upload failed'
+      render json: { success: false, message: 'Profile update failed' }
+    else
+      retrievehome
+      flash.now[:success] = 'Profile has been successfully uploaded'
+      render json: { success: true, message: 'Profile has been successfully uploaded' }
+    end
+  end
 
   def confirm
     #check login user

@@ -162,7 +162,7 @@
           }
         });
       }
-      else if (!isClickSendButton && messageContent.length == 0) {
+      else if (!isClickSendButton && messageContent.length === 0) {
         $.ajax({
           url: '<%= delete_groupmsg_path %>',
           type: 'GET',
@@ -173,7 +173,7 @@
           }
         });
       }
-      else if (isClickSendButton) {
+      else if (isClickSendButton && draft_message_arr) {
         var delete_draft_massage_id = draft_message_arr.id;
         $.ajax({
           url: '<%= delete_groupmsg_path %>',

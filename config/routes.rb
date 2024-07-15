@@ -54,11 +54,13 @@ Rails.application.routes.draw do
   get "channeluserleave" => "channel_user#leave"
   get "channeluserjoin" => "channel_user#join"
 
-  post "directmsg" => "direct_message#show"
-  post "directthreadmsg" => "direct_message#showthread"
-
-  post "groupmsg" => "group_message#show"
-  post "groupthreadmsg" => "group_message#showthread"
+  post 'directmsg' => 'direct_message#show'
+  post 'directthreadmsg' => 'direct_message#showthread'
+  post 'directthreadmsgdirectly' => 'direct_message#showthreaddirectly'
+  
+  post 'groupmsg' => 'group_message#show'
+  post 'groupthreadmsg' => 'group_message#showthread'
+  post 'groupthreadmsgdirectly' => 'group_message#showthreaddirectly'
 
   get "refresh" => "sessions#refresh"
 

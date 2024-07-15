@@ -52,7 +52,30 @@ class DirectMessageController < ApplicationController
       };
         post_data("/directthreadmsg", data)
         redirect_to t_direct_message_path(session[:s_direct_message_id])
-      
+    end
+  end
+
+  # send thread directly from thread lists
+  def showthreaddirectly
+    #check unlogin user
+     checkuser
+
+    if params[:session][:t_direct_message_id].nil?
+      redirect_to thread_url
+    elsif params[:session][:t_direct_message_id].nil?
+      redirect_to home_url
+    elsif params[:session][:message].blank?
+      redirect_to thread_url
+    else
+      data =  {
+        "s_direct_message_id": params[:session][:t_direct_message_id],
+        "s_user_id": params[:session][:t_directmsg_sender_id],
+        "message": params[:session][:message],
+        "user_id": session[:current_user_id],
+        "draft_message_status": 0,
+      };
+      post_data("/directthreadmsg", data)
+      redirect_to thread_url
     end
   end
 

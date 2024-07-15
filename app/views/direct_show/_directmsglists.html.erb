@@ -2,25 +2,41 @@
   <% @count = 0 %>
   <div id="directlist">
     <div class="title">
-      <h2 class="style1"><%= @s_user["name"] %></h2>
+      <% if @s_user['image_url'].present? %>
+        <img src="<%= @s_user['image_url'] %>" alt="Profile Image" class="d-profile-image">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= @s_user['name'][0].upcase %>
+        </div>
+      <% end %>      
+      <h2 style="margin-left: 290px;"><%= @s_user['name'] %></h2> 
     </div>
     
-    <div class="style1" style="padding-top: 80px">
-      <%= link_to "Load More", refresh_direct_url, class: "glyphicon glyphicon-refresh", style: "word-spacing: -0.63em;" %>
+    <div class="load-mode-container">
+      <div class="style6" style="top: 126px;">
+        <%= link_to "Load More", refresh_direct_url, class: 'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;' %>
+      </div>
     </div>
 
-    <% @t_direct_message_dates.each do |t_direct_date| %>
-      <h2 class="style1"><%= t_direct_date["created_date"] %></h2>
-      <% direct_messages_for_date = @t_direct_messages.select { |msg| msg["created_at"].to_date == Date.parse(t_direct_date["created_date"]) }
-         # Check if direct_messages_for_date is correctly populated %>
+    <div class="message-content" style="margin-top: 40px;">
+      <% @t_direct_message_dates.each do |t_direct_date| %>
+      <h2 class="style1"><%= t_direct_date['created_date'] %></h2>
+      <% 
+      direct_messages_for_date = @t_direct_messages.select { |msg| msg['created_at'].to_date == Date.parse(t_direct_date['created_date']) } 
+      # Check if direct_messages_for_date is correctly populated
+      %>
       <% direct_messages_for_date.each do |t_direct_message| %>
-        <% if !t_direct_message["draft_message_status"] %>
-          <p class="style21"><%= @count += 1 %></p>
-          <p class="style22"><strong><%= t_direct_message["name"] %></strong></p>
-
-          <p class="style23"><%= (t_direct_message["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
-
-          <p class="style24"><%= link_to t_direct_message["count"], t_direct_message_path(id: t_direct_message["id"]), class: "fab fa-facebook-messenger style22" %></p>
+        <% if !t_direct_message['draft_message_status'] %>
+          <% if t_direct_message['image_url'].present? %>
+          <img src="<%= t_direct_message['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= t_direct_message['name'][0].upcase %>
+          </div>
+        <% end %>
+          <p class="style22"><strong><%= t_direct_message['name'] %></strong></p>
+          <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+          <p class="style24"><%= link_to t_direct_message['count'], t_direct_message_path(id: t_direct_message['id']), class: 'fab fa-facebook-messenger' %></p>
           
           <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { message_id: t_direct_message["id"] }, style: "text-decoration:none;" %>
 
@@ -76,7 +92,8 @@
         <% end %>
         
       <% end %>
-    <% end %>
+      <% end %>
+    </div>
 
   </div>
 </div>
