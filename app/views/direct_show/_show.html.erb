@@ -1,21 +1,21 @@
 <div id="main">
 
-  <div class = "txtmsg">	
+  <div class = "txtmsg">
     <% @count = 0 %>
-    <%= render 'direct_show/directmsglists' %>
+    <%= render "direct_show/directmsglists" %>
     <div class = "textboxbg">
       <div class="textboxeditor">
 
         <div id="toolbar">
-          <button class="ql-bold disable"></button>
-          <button class="ql-italic disable"></button>
-          <button class="ql-strike disable"></button>
-          <button class="ql-link disable"></button>
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-strike"></button>
+          <button class="ql-link"></button>
           <button class="ql-list" value="ordered"></button>
           <button class="ql-list" value="bullet"></button>
           <button class="ql-blockquote"></button>
-          <button id="code-block" class="btn-icon"><i class="fas fa-code"></i></button>
-          <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
+          <button class="ql-code-block"></button>
+          <button id="highlight-text" class="btn-icon"><i class="fas fa-laptop-code"></i></button>
         </div>
 
         <div id="link-dialog" style="display: none;">
@@ -29,8 +29,8 @@
         <%= form_for(:session, url: directmsg_path) do |f| %>
           <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
             <div id="editor"></div>
-            <%= f.hidden_field :message, id: 'quill-content' %>
-            <%= f.hidden_field :draft_status, value:false %>
+            <%= f.hidden_field :message, id: "quill-content" %>
+            <%= f.hidden_field :draft_status, value: false %>
           </div>
           <div class="col-md-1 mt-10">
             <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
@@ -47,7 +47,7 @@
 </div>
 
 <div>
-  <%= render 'leftpanel/leftpanel' %>
+  <%= render "leftpanel/leftpanel" %>
 </div>
 
 <script>
@@ -71,24 +71,6 @@
   HighlightBlot.tagName = 'span';
   Quill.register(HighlightBlot);
 
-  //code block
-  var Block = Quill.import('blots/inline');
-  class CodeBlot extends Block {
-    static create(value) {
-      let node = super.create();
-      node.setAttribute('class', 'codeblock');
-      return node;
-    }
-
-    static formats(node) {
-      return node.getAttribute('class');
-    }
-  }
-
-  CodeBlot.blotName = 'codeblock';
-  CodeBlot.tagName = 'span';
-  Quill.register(CodeBlot);
-
   //call quill
   document.addEventListener("DOMContentLoaded", function() {
     const toolbarOptions = [
@@ -96,7 +78,7 @@
       ['bold', 'italic', 'strike'],
       ['link'],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['blockquote'],
+      ['blockquote','code-block'],
     ];
 
     const quill = new Quill('#editor', {
@@ -128,7 +110,7 @@
       var draftedMessage = draft_message_arr.directmsg;
       var draftSenderId = draft_message_arr.send_user_id;
       var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;    
+      isSaveDraft = false;
     }
     quill.setContents([{
       insert: draftedMessage,
@@ -187,7 +169,7 @@
           data:{id: draftedMessageId},
           headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          } 
+          }
         });
       }
       else if (isClickSendButton) {
@@ -234,76 +216,23 @@
         updateButtonText();
     });
 
-    document.querySelector('#highlight-text').addEventListener('click', function() {     
-      if (!isCodeblocking) {
-        toggleHighlight();
-      } else {
-        quill.focus();
-      }
+    document.querySelector('#highlight-text').addEventListener('click', function() {
+      toggleHighlight();
       var htmlContent = quill.getSemanticHTML();
       document.querySelector('#quill-content').value = htmlContent;
     });
 
     updateButtonText();
-    // highlight end 
+    // highlight end
 
-    // codeblock start 
-    var isCodeblocking = false;
-
-    function updateCodeBtn() {   
-      if (isCodeblocking) {
-        document.querySelector('#code-block').classList.add('active');
-        var btns = document.querySelectorAll(".disable");
-        btns.forEach(btn => btn.disabled = true);
-      } else {
-        document.querySelector('#code-block').classList.remove('active');
-        var btns = document.querySelectorAll(".disable");
-        btns.forEach(btn => btn.disabled = false);
-      }
-    }
-
-    function toggleCodeblock() {
-      var format = quill.getFormat();
-      if (format.codeblock) {
-        quill.format('codeblock', false);
-        isCodeblocking = false;
-      } else {
-        quill.format('codeblock', true);
-        isCodeblocking = true;
-      }
-      updateCodeBtn();
-      quill.focus();
-    }
-
-    quill.on('text-change', function() {
-      var format = quill.getFormat();
-        isCodeblocking = !!format.codeblock;
-        updateCodeBtn();
-    });
-
-    document.querySelector('#code-block').addEventListener('click', function() {
-      if (!isHighlighting) {
-        toggleCodeblock();
-      } else {
-        quill.focus();
-      }
-      var htmlContent = quill.getSemanticHTML();
-      document.querySelector('#quill-content').value = htmlContent;
-    });
-
-    updateCodeBtn();
-    // codeblock end 
-        
-    // codeblock and highlight btn status 
+    // highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
-        isCodeblocking = false;
-        updateCodeBtn();
         isHighlighting = false;
         updateButtonText();
       }
     });
-        
+
     // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
@@ -315,7 +244,7 @@
         }
 
         $('#link-name').val(selectedText);
-      } 
+      }
     });
 
     function showLinkDialog(range) {
@@ -330,7 +259,7 @@
             quill.deleteText(range.index + linkText.length, range.length);
           }
             quill.setSelection(range.index + linkText.length, 0);
-             
+
           hideLinkDialog();
         } 
       };
@@ -364,9 +293,16 @@
     var form = document.querySelector('form');
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
+      console.log(quill.getSemanticHTML())
       var quillContent = document.querySelector('#quill-content');
+      htmlContent = htmlContent.replace(/<pre([^>]*)data-language="plain"([^>]*)>([\s\S]*?)<\/pre>/g, function(match, attr1, attr2, content) {
+        content = content.trim().replace(/\n/g, '<br>');
+        return `<div${attr1}class="ql-code-block"${attr2}>${content}</div>`;
+      });
+      htmlContent = htmlContent.replace(/<\/blockquote>\s*<blockquote>/g, '<br>');
       htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
+      console.log(htmlContent)
     }
 
     // validate btn

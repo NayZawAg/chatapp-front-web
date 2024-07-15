@@ -696,24 +696,39 @@ div.textboxbg {
   padding: 3px;
 }
 
-.codeblock {
-  display: inline-block;
+.ql-snow .ql-editor .ql-code-block-container {
+  border: 1px solid #A9A9A9;
+  background-color: rgb(228, 228, 228) !important;
+  padding: 2px !important;
+  border-radius: 5px;
   font-family: monospace;
   font-size: 13px;
-  width: 100%;
-  border: 0.7px solid #ccc;
-  border-radius: 5px;
-  padding: 8px;
+}
+
+.ql-code-block-container .ql-code-block {
+  border: none;
+}
+
+div .ql-code-block {
+  color: black;
   background-color: rgb(228, 228, 228);
+  padding: 7px;
+  border: 1px solid #A9A9A9;
+  border-radius: 5px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.ql-toolbar .ql-code-block {
+  background-color: none;
 }
 
 .btn-icon {
   font-size: 13px;
 }
 
-.btn-icon.active {
+.active {
   color: rgb(67, 67, 255);
-  /* Color when active (highlighted) */
 }
 
 .mt-10 {
@@ -723,6 +738,15 @@ div.textboxbg {
 .test {
   background-color: red;
 
+}
+
+.ql-snow.ql-toolbar button {
+  margin: 2px;
+}
+
+.ql-snow.ql-toolbar button.ql-active {
+  background-color: rgba(194, 192, 192, 0.5);
+  border-radius: 5px;
 }
 
 .ql-editor.ql-blank:focus::before {
@@ -736,4 +760,30 @@ div.textboxbg {
 
 .editcancle {
   margin-left: 10px;
+}
+
+// emoji
+.btnEmoji {
+  word-wrap: break-word;
+  width: 58px;
+  border: 2px solid #05437c;
+  background-color: #E6F7F9;
+  border-radius: 15px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.btnEmoji1 {
+  word-wrap: break-word;
+  width: 58px;
+  background-color: #E8EBEC;
+  border-radius: 15px;
+  border: 0;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.reactionBox {
+  width: 750px;
+  margin-left: 320px;
 }
