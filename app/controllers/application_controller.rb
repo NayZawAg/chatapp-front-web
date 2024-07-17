@@ -10,11 +10,11 @@ class ApplicationController < ActionController::Base
     @m_channels = MChannel.new
 
     @current_user = response["current_user"]
-    @current_user.delete("profile_image_url")
     @m_usering = MUser.new(@current_user)
     @email = @m_usering.email
     @m_user = @current_user["name"]
     @current_user_id = @current_user["id"]
+    @profile_image_url = @current_user["profile_image_url"]
 
     @current_user_admin = @current_user["admin"]
     @workspace_name = response["m_workspace"]["workspace_name"]
@@ -59,6 +59,7 @@ class ApplicationController < ActionController::Base
     @t_direct_threads = response["t_direct_threads"]
     @t_direct_star_thread_msgids = response["t_direct_star_thread_msgids"]
     @sender_name = response["sender_name"]
+    @send_user = response['send_user']
     @t_direct_react_thread_msgids = response["t_direct_react_thread_msgids"] || []
     @t_direct_thread_emojiscounts = response["t_direct_thread_emojiscounts"] || []
     @react_usernames = response["react_usernames"] || []

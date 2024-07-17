@@ -6,7 +6,13 @@
 
     <hr>
 
-    <p class="style21">1</p>
+    <% if @send_user['image_url'].present? %>
+      <img src="<%= @send_user['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+    <% else %>
+      <div class="profile-placeholder" style="margin-left: 250px">
+        <%= @send_user['name'][0].upcase %>
+      </div>
+    <% end %>
 
     <p class="style22"><strong><%= @send_user["name"] %></strong></p>
 
@@ -21,8 +27,15 @@
       <h2 class="style1">Reply</h2>
       <hr>
 
-      <% @t_group_threads.each do |t_group_thread| %>
-        <% if !t_group_thread["draft_message_status"] %>
+    <% @t_group_threads.each do |t_group_thread| %>
+      <% if !t_group_thread['draft_message_status'] %>
+        <% if t_group_thread['image_url'].present? %>
+        <img src="<%= t_group_thread['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= t_group_thread['name'][0].upcase %>
+        </div>
+      <% end %>
 
           <p class="style22"><strong><%= t_group_thread["name"] %></strong></p>
 
@@ -249,7 +262,7 @@
           }
         });
       }
-      else if (!isClickSendButton && messageContent.length == 0) {
+      else if (!isClickSendButton && messageContent.length === 0) {
         $.ajax({
           url: '<%= delete_groupthread_path %>',
           type: 'GET',
@@ -260,7 +273,7 @@
           }
         });
       }
-      else if (isClickSendButton) {
+      else if (isClickSendButton && draft_message_arr) {
         var delete_draft_massage_id = draft_message_arr.id;
         $.ajax({
           url: '<%= delete_groupthread_path %>',

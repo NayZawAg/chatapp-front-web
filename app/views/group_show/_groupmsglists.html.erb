@@ -27,15 +27,26 @@
         <% end %>
       </h2>
     </div>
-    <div class="style1" style="padding-top: 80px">
-      <%= link_to "Load Mode", refresh_group_url, class: "glyphicon glyphicon-refresh", style: "word-spacing: -0.63em;" %>
+
+    <div class="load-mode-container">
+      <div class="style6">
+        <%= link_to "Load More", refresh_group_url , class:'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;'%>
+      </div>
     </div>
-    <% @t_group_message_dates.each do |t_group_message_date| %>
-      <% if @t_group_message_datesize.include? t_group_message_date["created_date"] %>
-        <h2 class="style1"><%= t_group_message_date["created_date"] %></h2>
+    
+    <div class="message-content">
+      <% @t_group_message_dates.each do |t_group_message_date| %>
+      <% if @t_group_message_datesize.include?t_group_message_date['created_date'] %>
+        <h2 class="style1"><%= t_group_message_date['created_date'] %></h2>
         <% @t_group_messages.each do |t_group_message| %>
-          <% if t_group_message_date["created_date"].to_s == t_group_message["created_at"].to_time.strftime("%F").to_s && !t_group_message["draft_message_status"] %>
-            <p class="style21"><%= @count += 1 %></p>
+          <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s && !t_group_message['draft_message_status'] %>
+            <% if t_group_message['image_url'].present? %>
+              <img src="<%= t_group_message['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+            <% else %>
+              <div class="profile-placeholder" style="margin-left: 250px">
+                <%= t_group_message['name'][0].upcase %>
+              </div>
+            <% end %>
 
             <p class="style22"><strong><%= t_group_message["name"] %></strong></p>
 
@@ -92,10 +103,11 @@
               <% end %>
             </div>
             <hr>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
 </div>
 

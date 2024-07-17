@@ -60,6 +60,30 @@ class GroupMessageController < ApplicationController
     end
   end
 
+  # send thread directly from thread lists
+  def showthreaddirectly
+    if params[:session][:t_group_message_id].nil?
+      unless params[:session][:t_channel_id].nil?
+        redirect_to thread_url
+      end
+    elsif params[:session][:t_channel_id].nil?
+      redirect_to thread_url
+    elsif params[:session][:message].blank?
+      redirect_to thread_url
+    else
+      mention_name = params[:session][:mention_name] 
+      data =  {
+        "s_group_message_id": params[:session][:t_group_message_id],
+        "s_channel_id": params[:session][:t_channel_id],
+        "message": params[:session][:message],
+        "mention_name": [mention_name],
+        "draft_message_status": 0,
+      };
+        post_data("/groupthreadmsg", data)
+        redirect_to thread_url
+    end
+  end
+
   def deletemsg
     if session[:s_channel_id].nil?
       redirect_to home_url
