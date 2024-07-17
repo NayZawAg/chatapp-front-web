@@ -37,8 +37,6 @@
         </div>
       <% end %>
 
-      <p class="style21"><%= @count += 1 %></p>
-
           <p class="style22"><strong><%= t_group_thread["name"] %></strong></p>
 
           <p class="style23"><%= (t_group_thread["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
@@ -81,7 +79,7 @@
                     <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_group_thread["id"] %>" data-message-id="<%= t_group_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
                       <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", groupthreadreact_path(thread_id: t_group_thread["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
                     </button>
-                  <% else %>  
+                  <% else %>
                     <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_group_thread["id"] %>" data-message-id="<%= t_group_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
                       <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", groupthreadreact_path(thread_id: t_group_thread["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
                     </button>
@@ -91,11 +89,12 @@
                 <% userIds = [] %>
               <% end %>
             <% end %>
-          </div> 
-        <% end %> 
+          </div>
+        <% end %>
       <% end %>
     </div>
   </div>
+</div>
 
 <div class = "textboxbg">
   <div class="textboxeditor">
@@ -139,7 +138,7 @@
 
     <% else %>
       <div style="padding-bottom: 20px">
-      <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: "btn btn-primary" %>
+        <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: "btn btn-primary" %>
       </div>
     <% end %>
   </div>
@@ -150,7 +149,10 @@
 </div>
 
 <script>
-
+  if (!sessionStorage.getItem('reloaded')) {
+    sessionStorage.setItem('reloaded', 'true');
+    location.reload();
+  }
   // highlight
   var Inline = Quill.import('blots/inline');
 
@@ -209,7 +211,7 @@
       var draftedMessage = draft_message_arr.groupthreadmsg;
       var draftSenderId = draft_message_arr.m_user_id;
       var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;    
+      isSaveDraft = false;
     }
     quill.setContents([{
       insert: draftedMessage,
@@ -219,6 +221,7 @@
     });
 
     $(window).bind('beforeunload', () => {
+      sessionStorage.removeItem('reloaded');
       var messageContent = quill.getText().trim();
       if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
         var draftStatus = true;
@@ -282,7 +285,7 @@
           }
         });
       }
-    }); 
+    });
 
     // highlight start
     var isHighlighting = false;
@@ -332,7 +335,7 @@
       }
     });
 
-		// for link dialog 
+    // for link dialog 
     var range = quill.getSelection();
     quill.on('selection-change', function(range, oldRange, source) {
       if (range && range.length > 0) {
@@ -371,14 +374,14 @@
     }
 
     function hideLinkDialog() {
-			document.getElementById('link-dialog').style.display = 'none';
-			document.getElementById('link-name').value = '';
-			document.getElementById('link-url').value = '';
+      document.getElementById('link-dialog').style.display = 'none';
+      document.getElementById('link-name').value = '';
+      document.getElementById('link-url').value = '';
     }
 
     // Prevent Quill from losing focus when clicking inside the dialog
     document.getElementById('link-dialog').addEventListener('mousedown', function(event) {
-			event.stopPropagation();
+      event.stopPropagation();
     });
 
     // for toggle toolbar 
@@ -387,7 +390,7 @@
     const toggleButton = document.getElementById('toggle-toolbar');
 
     toggleButton.addEventListener('click', function() {
-			toolbarui.classList.toggle('hidden');
+      toolbarui.classList.toggle('hidden');
     });
 
     var form = document.querySelector('form');
@@ -430,7 +433,7 @@
         quill.setSelection(range.index + ui.item.label.length);
       }
     });
-    
+
     quill.on('text-change', function(delta, oldDelta, source) {
       if (source === 'user') {
         const range = quill.getSelection();
@@ -491,9 +494,9 @@
 
 <!-- emoji button -->
 <script>
-	document.addEventListener('DOMContentLoaded', () => {
-		const picker = new EmojiButton();
-		document.querySelectorAll('.emoji-button').forEach(button => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const picker = new EmojiButton();
+    document.querySelectorAll('.emoji-button').forEach(button => {
       button.addEventListener('click', (event) => {
         event.preventDefault();
         picker.togglePicker(button);
@@ -529,12 +532,12 @@
           });
         });
       });
-		});
+    });
     // Initialize all tooltips
-    $(document).ready(function(){
+    $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip(
         {container:'body', trigger: 'hover', placement:"top"}
-      );   
+      );
     });
-	});
+  });
 </script>

@@ -122,6 +122,10 @@
 </div>
 
 <script>
+  if (!sessionStorage.getItem('reloaded')) {
+    sessionStorage.setItem('reloaded', 'true');
+    location.reload();
+  }
   // highlight
   var Inline = Quill.import('blots/inline');
   class HighlightBlot extends Inline {
@@ -189,6 +193,7 @@
     });
 
     $(window).bind('beforeunload', () => {
+      sessionStorage.removeItem('reloaded');
       var messageContent = quill.getText().trim();
       if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
         var draftStatus = true;
