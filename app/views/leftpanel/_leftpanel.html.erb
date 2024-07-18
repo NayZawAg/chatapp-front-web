@@ -24,7 +24,7 @@
             <li class="form-inline my-0 my-lg-0">
               <i class="fa fa-pen"></i>
               <span style="display: inline-block;">
-               <%= link_to "下書き" , draftlists_url , style: 'padding-left: 0px;'%>
+                <%= link_to "下書き", draftlists_url, style: 'padding-left: 0px;'%>
               </span>
             </li>
             <ul class="countnumber">
@@ -32,41 +32,41 @@
                 <li class="countnumberone">
                   <i class="fa fa-align-justify"></i>
                   <span style="display: inline-block;">
-                  <%= link_to "全未読" , allunread_url , style: 'padding-left: 0px;'%>
+                    <%= link_to "全未読", allunread_url, style: 'padding-left: 0px;'%>
                   </span>
                 </li>
                 <% if @all_unread_count == 0 %>
 
                 <% else %>
-                <li class="countnumbertwo">
-                  <%= @all_unread_count %>
-                </li>
+                  <li class="countnumbertwo">
+                    <%= @all_unread_count %>
+                  </li>
                 <% end %>
               </div>
             </ul>
             <li class="form-inline my-0 my-lg-0">
               <i class="fa fa-comments"></i>
               <span style="display: inline-block;">
-               <%= link_to "スレッド" , thread_url , style: 'padding-left: 0px;'%>
+                <%= link_to "スレッド", thread_url, style: 'padding-left: 0px;'%>
               </span>
             </li>
             <li class="form-inline my-0 my-lg-0">
               <i class="fa fa-star"></i>
               <span style="display: inline-block;">
-               <%= link_to "スター" , starlists_url , style: 'padding-left: 0px;'%>
+                <%= link_to "スター", starlists_url, style: 'padding-left: 0px;'%>
               </span>
             </li>
             <li class="form-inline my-0 my-lg-0">
               <i class="fa fa-at"></i>
               <span style="display: inline-block;">
-               <%= link_to "アクティピテイ" , mentionlists_url , style: 'padding-left: 0px;'%>
+                <%= link_to "アクティピテイ", mentionlists_url, style: 'padding-left: 0px;'%>
               </span>
             </li>
             <% if @current_user_admin == true %>
               <li class="form-inline my-0 my-lg-0">
                 <i class="fa fa-edit"></i>
                 <span style="display: inline-block;">
-                <%= link_to "ユーザ管理" , usermanage_url , style: 'padding-left: 0px;'%>
+                  <%= link_to "ユーザ管理", usermanage_url, style: 'padding-left: 0px;'%>
                 </span>
               </li>
             <% end %>
@@ -74,13 +74,13 @@
             <li class="form-inline my-0 my-lg-0">
               <i class="fa fa-circle"></i>
               <span style="display: inline-block;">
-              <%= link_to "メンバーを招待する" , memberinvite_url , style: 'padding-left: 0px;'%>
+                <%= link_to "メンバーを招待する", memberinvite_url, style: 'padding-left: 0px;'%>
               </span>
             </li>
             <li>
               <i class="fa fa-plus-circle"></i>
               <span style="display: inline-block;">
-              <%= link_to "チャンネル" , channelcreate_url , style: 'padding-left: 0px;'%>
+                <%= link_to "チャンネル", channelcreate_url, style: 'padding-left: 0px;'%>
               </span>
               <div id="channellists" channelData = "<%= @m_channels.to_json %>" >
                 <% @c_count = 0 %>
@@ -91,40 +91,40 @@
                     <ul style="background-color: #2E86C1" class="countnumber">
                   <% end %>
                     <li class="countnumberone">
-                    <% if m_channel['channel_status'] == true %>
-                      <%if @group_draft_status_counts[@c_count] != 0 %>
-                        <i class="fa fa-hashtag"></i>
-                        <span style="display: inline-block;">
-                        <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
-                        </span>
-                        <span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                      <% if m_channel['channel_status'] == true %>
+                        <%if @group_draft_status_counts[@c_count] != 0 %>
+                          <i class="fa fa-hashtag"></i>
+                          <span style="display: inline-block;">
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
+                          </span>
+                          <span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                        <% else %>
+                          <i class="fa fa-hashtag"></i>
+                          <span style="display: inline-block;">
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
+                          </span>
+                        <% end %>
                       <% else %>
-                        <i class="fa fa-hashtag"></i>
-                        <span style="display: inline-block;">
-                        <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
-                        </span>
+                        <%if @group_draft_status_counts[@c_count] != 0 %>
+                          <i class="fa fa-lock"></i>
+                          <span style="display: inline-block;">
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
+                          </span>
+                          <span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                        <% else %>
+                          <i class="fa fa-lock"></i>
+                          <span style="display: inline-block;">
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
+                          </span>
+                        <% end %>
                       <% end %>
-                    <% else %>
-                      <%if @group_draft_status_counts[@c_count] != 0 %>
-                        <i class="fa fa-lock"></i>
-                        <span style="display: inline-block;">
-                        <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
-                        </span>
-                        <span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
-                      <% else %>
-                        <i class="fa fa-lock"></i>
-                        <span style="display: inline-block;">
-                        <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), style: 'padding-left: 0px;'%>
-                        </span>
-                      <% end %>
-                    <% end %>
                     </li>
                     <% if m_channel['message_count'] > 0 %>
                       <li class="countnumbertwo">
                         <%= m_channel['message_count'] %>
                       </li>
                     <% end %>
-                    </ul>
+                  </ul>
                   <% @c_count += 1 %>
                 <% end %>
               </div>
@@ -138,24 +138,24 @@
                     <% else %>
                       <ul style="background-color: #2E86C1" class="countnumber">
                     <% end %>
-                    <li class="countnumberone">
-                      <% if m_channel['channel_status'] == true %>
-                        <% if @group_draft_status_counts[@c_p_count] != 0 %>
-                          <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fas fa-hashtag' %><span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                      <li class="countnumberone">
+                        <% if m_channel['channel_status'] == true %>
+                          <% if @group_draft_status_counts[@c_p_count] != 0 %>
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fas fa-hashtag' %><span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                          <% else %>
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fas fa-hashtag'%>
+                          <% end %>
                         <% else %>
-                          <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fas fa-hashtag'%>
+                          <% if @group_draft_status_counts[@c_p_count] != 0 %>
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fa fa-lock' %><span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
+                          <% else %>
+                            <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fa fa-lock'%>
+                          <% end %>
                         <% end %>
-                      <% else %>
-                        <% if @group_draft_status_counts[@c_p_count] != 0 %>
-                          <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]) , class: 'fa fa-lock' %><span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
-                        <% else %>
-                          <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]) , class: 'fa fa-lock'%>
-                        <% end %>
-                      <% end %>
-                    </li>
+                      </li>
                     </ul>
                   <% end %>
-                <% @c_p_count += 1 %>
+                  <% @c_p_count += 1 %>
                 <% end %>
               </div>
             </li>
@@ -190,13 +190,13 @@
                           </div>
                         <% end %>
                         <% if m_user['active_status'] == true %>
-                          <% if @direct_draft_status_counts[@count] != 0 %>                        
+                          <% if @direct_draft_status_counts[@count] != 0 %>
                             <%= link_to "#{m_user['name']}", m_user_path(id: m_user['id']), style: 'word-spacing: -0.63em; color: yellow;' %><span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>                         
                           <% else %>
                             <%= link_to "#{m_user['name']}", m_user_path(id: m_user['id']), style: 'word-spacing: -0.63em; color: yellow;'%> 
                           <% end %>
                         <% else %>
-                          <% if @direct_draft_status_counts[@count] != 0 %>                           
+                          <% if @direct_draft_status_counts[@count] != 0 %>
                             <%= link_to "#{m_user['name']}", m_user_path(id: m_user['id']), style: 'word-spacing: -0.63em;' %><span class="glyphicon glyphicon-pencil" style="font-size: 10px;"></span>
                           <% else %>
                             <%= link_to "#{m_user['name']}", m_user_path(id: m_user['id']), style: 'word-spacing: -0.63em;' %>
@@ -208,7 +208,7 @@
                           </li>
                         <% end %>
                       </div>
-                      </ul>
+                    </ul>
                   <% end %>
                   <% @count += 1 %>
                 <% end %>
