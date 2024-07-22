@@ -1006,7 +1006,19 @@ hr.bold-hr {
   padding: 0.5rem 1rem; 
 }
 
-.fa-edit {
-  margin-left: 5px; 
+.show-more-replies:hover {
+  text-decoration: underline;
+}
+
+.g-show-more-replies:hover {
+  text-decoration: underline;
+}
+
+.hidden-reply {
+  display: none;
+}
+
+.fa {
+  margin-right: 2px;
 }
 
