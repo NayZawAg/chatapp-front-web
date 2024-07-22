@@ -15,7 +15,7 @@
         <div class="thread-container">
           
           <% mainUser = "" %>
-          <% if t_direct_message['sender_id'] != @current_user_id  %>
+          <% if t_direct_message['sender_id'] != @current_user_id %>
             <% mainUser = t_direct_message['name'] %>
           <% else %>
             <% mainUser = t_direct_message['receiver_name'] %>
@@ -378,19 +378,19 @@
   document.addEventListener("DOMContentLoaded", function() {
     const toolbarOptions = [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'strike'],        
+      ['bold', 'italic', 'strike'],
       ['link'],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['blockquote', 'code-block'],
     ];
 
-  // Get all the direct message IDs
-  var directMessageIds = Array.from(document.querySelectorAll('[data-direct-message-id]')).map(container => container.dataset.directMessageId);
-  // Get all the group message IDs
-  var groupMessageIds = Array.from(document.querySelectorAll('[data-group-message-id]')).map(container => container.dataset.groupMessageId);
+    // Get all the direct message IDs
+    var directMessageIds = Array.from(document.querySelectorAll('[data-direct-message-id]')).map(container => container.dataset.directMessageId);
+    // Get all the group message IDs
+    var groupMessageIds = Array.from(document.querySelectorAll('[data-group-message-id]')).map(container => container.dataset.groupMessageId);
 
-  // for direct
-  directMessageIds.forEach(function(messageId) {
+    // for direct
+    directMessageIds.forEach(function(messageId) {
       var quill = new Quill(`#editor-${messageId}`, {
         modules: {
           toolbar: {
@@ -418,7 +418,7 @@
       function updateButtonText() {
         var highlightText = document.querySelector(`#highlight-text-${messageId}`);
 
-        if(isHighlighting){
+        if (isHighlighting) {
           highlightText.classList.add('active');
         } else {
           highlightText.classList.remove('active');
@@ -448,7 +448,7 @@
           updateButtonText();
         } else {
           console.log('Hidden input not found');
-        } 
+        }
       });
 
       var highlightTextBtn = document.getElementById(`highlight-text-${messageId}`);
@@ -459,7 +459,7 @@
       });
       updateButtonText();
       // highlight end 
-      
+
       // codeblock and highlight btn status 
       quill.container.firstChild.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
@@ -473,7 +473,7 @@
       quill.on('selection-change', function(range, oldRange, source) {
         if (range && range.length > 0) {
           var selectedText = quill.getText(range.index, range.length);
-          if(selectedText){
+          if (selectedText) {
             $(`#toolbar-${messageId}`).removeClass("hidden");
           }
           $(`#link-name-${messageId}`).val(selectedText);
@@ -577,7 +577,7 @@
       function updateButtonText() {
         var highlightText = document.querySelector(`#g-highlight-text-${gMessageId}`);
 
-        if(isHighlighting){
+        if (isHighlighting) {
           highlightText.classList.add('active');
         } else {
           highlightText.classList.remove('active');
@@ -607,7 +607,7 @@
           updateButtonText();
         } else {
           console.log('Hidden input not found');
-        } 
+        }
       });
 
       var highlightTextBtn = document.getElementById(`g-highlight-text-${gMessageId}`);
@@ -632,7 +632,7 @@
       quill.on('selection-change', function(range, oldRange, source) {
         if (range && range.length > 0) {
           var selectedText = quill.getText(range.index, range.length);
-          if(selectedText){
+          if (selectedText) {
             $(`#g-toolbar-${gMessageId}`).removeClass("hidden");
           }
           $(`#g-link-name-${gMessageId}`).val(selectedText);
@@ -731,5 +731,5 @@
         }
       });
     });
-  });        
+  });
 </script>
