@@ -2,8 +2,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <%= favicon_link_tag 'woman7.png' %>
-  <title><%= full_title(yield(:title)) %></title>
+    <%= favicon_link_tag 'woman7.png' %>
+    <title><%= full_title(yield(:title)) %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -12,41 +12,48 @@
     <%= render 'layouts/rails_default' %>
     <%= render 'layouts/shim' %>
 
-    
-    <% unless session[:workspace_id].nil?%>
+    <% unless session[:workspace_id].nil? %>
       <script>
-      var yourInterval
+        var yourInterval
 
-      $(document).ready(function () {
+        $(document).ready(function () {
           // will call refreshPartial every 3 seconds
           // yourInterval = setInterval(refreshPartial, 3000)
-      });
+        });
 
-      // calls action refreshing the partial
-      function refreshPartial() {
-        //clearInterval(yourInterval)
-        $.ajax({
-          url: "/refresh"
-      })
-      }
+        // calls action refreshing the partial
+        function refreshPartial() {
+          //clearInterval(yourInterval)
+          $.ajax({
+            url: "/refresh"
+          })
+        }
 
-      function stop() { 
-        clearTimeout(yourInterval); 
-      } 
+        function stop() {
+          clearTimeout(yourInterval);
+        }
       </script>
-    <% end%>
+    <% end %>
   </head>
 
   <body>
-  <%= render 'layouts/header' %>
-    <div >
-    <% flash.each do |message_type, message| %>
-      <div style="text-align:center" class="alert alert-<%= message_type %>"><%= message %></div>
-    <% end %>
-    <%= yield %>
+    <%= render 'layouts/header' %>
+    <div>
+      <% flash.each do |message_type, message| %>
+        <div style="text-align:center" class="alert alert-<%= message_type %>"><%= message %></div>
+      <% end %>
+      <%= yield %>
     </div>
-    <% if session[:workspace_id].nil?%>
-      <%= render 'layouts/footer' %> 
-    <% end%>
+    <% if session[:workspace_id].nil? %>
+      <%= render 'layouts/footer' %>
+    <% end %>
   </body>
+
+  <script>
+    $(document).ready(function() {
+      setTimeout(function() {
+        $('.alert').fadeOut('slow');
+      }, 3000); // Adjust the timeout (in milliseconds) as needed
+    });
+  </script>
 </html>

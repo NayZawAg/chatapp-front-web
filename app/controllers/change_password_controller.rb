@@ -1,6 +1,6 @@
 class ChangePasswordController < ApplicationController
   include FaradayApiClient
-  
+  before_action :check_token
   def new
     #check unlogin user
     checkuser

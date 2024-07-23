@@ -1,4 +1,5 @@
 class DraftListsController < ApplicationController
+  before_action :check_token
   def show
     retrievehome
     @current_user_id = @current_user["id"]

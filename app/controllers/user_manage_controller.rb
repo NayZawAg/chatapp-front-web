@@ -1,6 +1,6 @@
 class UserManageController < ApplicationController
   include FaradayApiClient
-  
+  before_action :check_token
   def usermanage
     #check unlogin user
     # checkuser

@@ -1,4 +1,5 @@
 class TGroupReactMsgController < ApplicationController
+  before_action :check_token
   def create
     if session[:s_channel_id].nil?
       redirect_to home_url

@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   include FaradayApiClient
-  
+  before_action :check_token, only: [:refresh] 
   def new
     #check login user
     checkloginuser

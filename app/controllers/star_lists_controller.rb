@@ -1,6 +1,6 @@
 class StarListsController < ApplicationController
   include FaradayApiClient
-  
+  before_action :check_token
   def show
  
     current_user_ids = session[:current_user_id]

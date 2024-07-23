@@ -1,9 +1,8 @@
 class MentionListsController < ApplicationController
   include FaradayApiClient
-
+  before_action :check_token
   def show
     #check login user
-
     current_user_id = session[:current_user_id]
     response = get_data("/mentionlists?user_id=#{current_user_id}")
     @t_group_messages = response['t_group_messages']

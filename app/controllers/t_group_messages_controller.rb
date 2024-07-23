@@ -5,6 +5,7 @@
 #Version 1.0.0
 
 class TGroupMessagesController < ApplicationController
+  before_action :check_token
   def show
     session[:s_group_message_id] =  params[:id]
 
