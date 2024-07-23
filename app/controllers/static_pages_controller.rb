@@ -1,8 +1,16 @@
 class StaticPagesController < ApplicationController
   include FaradayApiClient
-  # before_action :check_user
-
+  before_action :check_token, only: [:home]
   def welcome
+    if session[:token].present? && session[:current_user_id].present?
+      response = get_data("/main")
+      if response['error'] == 'Invalid token'
+        flash[:danger] = 'session expire! Please login again.' || 'Unknown error occurred'
+        redirect_to '/logout'
+      else
+        redirect_to home_url
+      end
+    end
   end
 
   def home

@@ -49,4 +49,12 @@
       <%= render 'layouts/footer' %> 
     <% end%>
   </body>
+
+  <script>
+    $(document).ready(function() {
+    setTimeout(function() {
+      $('.alert').fadeOut('slow');
+    }, 3000); // Adjust the timeout (in milliseconds) as needed
+  });
+  </script>
 </html>

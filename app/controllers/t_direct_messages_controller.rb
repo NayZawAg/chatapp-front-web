@@ -1,6 +1,6 @@
 class TDirectMessagesController < ApplicationController
   include FaradayApiClient
-  
+  before_action :check_token
   def show
     #check unlogin user
     # checkuser

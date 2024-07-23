@@ -5,7 +5,7 @@
 
 class MUsersController < ApplicationController
   include FaradayApiClient
-
+  before_action :check_token, except: [:create, :confirm]
   def create
     workspaceid = session[:confirm_workspace_id]
     workSpaceName = session[:cofirm_ws_name]

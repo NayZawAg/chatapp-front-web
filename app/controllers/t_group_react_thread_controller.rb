@@ -1,4 +1,5 @@
 class TGroupReactThreadController < ApplicationController
+  before_action :check_token
   def create
     #check unlogin user
     # checkuser

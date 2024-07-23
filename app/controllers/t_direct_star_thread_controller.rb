@@ -5,6 +5,7 @@
 #Version 1.0.0
 
 class TDirectStarThreadController < ApplicationController
+  before_action :check_token
   def create
     # #check unlogin user
     # checkuser

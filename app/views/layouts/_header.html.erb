@@ -5,7 +5,7 @@
     <%= link_to "Mimo App", '#', id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
-      <% if session[:workspace_id].nil?%>
+      <% if session[:workspace_id].nil? || session[:current_user_id].nil? %>
         <li><%= link_to "Home",   'welcome' %></li>
         <li><%= link_to "Create Workspace",   'workspace' %></li>
         <li><%= link_to "Sign in", 'signin' %></li>

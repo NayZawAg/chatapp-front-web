@@ -1,7 +1,7 @@
 class GroupMessageController < ApplicationController
   include FaradayApiClient
   include ActionView::Helpers::SanitizeHelper
-
+  before_action :check_token
   def show
     #check unlogin user
 

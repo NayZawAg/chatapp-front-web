@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   include FaradayApiClient
   include SessionsHelper
-
+  before_action :check_token, only: [:retrievehome, :retrieve_direct_message, :retrieve_direct_thread, :retrieve_group_message, :retrieve_group_thread] 
   def retrievehome
     response = get_data("/main")
 
@@ -123,4 +123,14 @@ class ApplicationController < ActionController::Base
       redirect_to home_url
     end
   end
+
+  # to check token expire or not
+  def check_token
+    response = get_data("/main")
+    if response['error'] == 'Invalid token'
+      flash[:danger] = 'session expire! Please login again.' || 'Unknown error occurred'
+      return redirect_to '/logout'
+    end
+  end
+
 end

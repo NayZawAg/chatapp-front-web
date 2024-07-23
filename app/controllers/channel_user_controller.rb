@@ -1,6 +1,6 @@
 class ChannelUserController < ApplicationController
   include FaradayApiClient
-
+  before_action :check_token
   def show
     response = get_data("/channeluser?channel_id=#{session[:s_channel_id]}&workspace_id=#{session[:workspace_id]}")
     @c_users_id = response['c_users_id'] || []

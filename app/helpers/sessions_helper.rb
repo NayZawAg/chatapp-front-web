@@ -35,6 +35,7 @@ module SessionsHelper
     #   "#{session[:user_id]}_token", 
     #   session[:user_id]
     # )
+    session.delete(:current_user_id)
     session.delete(:user_id)
     session.delete(:workspace_id)
     session.delete(:token)
