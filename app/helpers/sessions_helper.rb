@@ -16,7 +16,7 @@ module SessionsHelper
 
   def current_user
     user_id = session[:user_id]
-     @current_user ||= MUser.find_by(id: user_id)
+    @current_user ||= MUser.find_by(id: user_id)
     # data = RedisClient.redis.get(user_id)
     @current_user ||= Marshal.load(data)
   end
@@ -32,7 +32,7 @@ module SessionsHelper
     @current_user = nil
     # Clear redis
     # RedisClient.redis.del(
-    #   "#{session[:user_id]}_token", 
+    #   "#{session[:user_id]}_token",
     #   session[:user_id]
     # )
     session.delete(:current_user_id)
