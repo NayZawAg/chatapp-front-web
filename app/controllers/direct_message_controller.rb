@@ -13,16 +13,16 @@ class DirectMessageController < ApplicationController
     checkuser
     message = params[:session][:message]
     draft_status = params[:session][:draft_status]
+    files = params[:session][:files]
     if session[:s_user_id].nil?
       redirect_to home_url
-    elsif params[:session][:message].blank?
-      redirect_to m_user_path(session[:s_user_id])
     else
       data = {
         "message": message,
         "user_id": session[:current_user_id],
         "s_user_id": session[:s_user_id],
         "draft_message_status": draft_status,
+        "files": files
       };
      
       post_data("/directmsg", data)
@@ -40,8 +40,6 @@ class DirectMessageController < ApplicationController
       end
     elsif session[:s_user_id].nil?
       redirect_to home_url
-    elsif params[:session][:message].blank?
-      redirect_to t_direct_message_path(session[:s_direct_message_id])    
     else
       data =  {
         "s_direct_message_id": session[:s_direct_message_id],
@@ -49,6 +47,7 @@ class DirectMessageController < ApplicationController
         "message": params[:session][:message],
         "user_id": session[:current_user_id],
         "draft_message_status": params[:session][:draft_status],
+        "files": params[:session][:files]
       };
         post_data("/directthreadmsg", data)
         redirect_to t_direct_message_path(session[:s_direct_message_id])

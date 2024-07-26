@@ -56,7 +56,7 @@
   </div>
 
   <div id="group_unread" class="tabcontent" style="display: none;">
-    <% if @t_group_messages.any? { |msg| @t_user_channelids.include?(msg['id'].to_i) } %>
+    <% if @t_group_messages.any? %>
       <% @t_group_messages.each do |t_group_message| %>
         <% @t_user_channelids.each do |id| %>
           <% if id.to_i == t_group_message['id'] %>
@@ -83,7 +83,7 @@
   </div>
 
   <div id="group_threads" class="tabcontent" style="display: none;">
-    <% if @t_group_threads.any? { |thread| @t_user_channelthreadids.include?(thread['id'].to_i) } %>
+    <% if @t_group_threads.any? %>
       <% @t_group_threads.each do |t_group_thread| %>
         <% @t_user_channelthreadids.each do |id| %>
           <% if id.to_i == t_group_thread['id'] %>

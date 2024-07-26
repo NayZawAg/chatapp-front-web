@@ -24,6 +24,8 @@
           <button id="link-save">Yes</button>
         </div>
 
+        <div id="file-container" style="display: none; margin-top: 10px;"></div>
+
         <%= form_for(:session, url: groupmsg_path) do |f| %>
           <div class="col-md-11" draftData="<%= @t_group_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
             <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: "@" + t["name"] } }.to_json %>"></div>
@@ -34,11 +36,15 @@
             <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
           </div>
           <%= f.hidden_field :memtion_name, class: "memtion_name" %>
+        
+          <div class="col-md-11">
+            <%= f.file_field :file, id: 'file_input', style: 'display: none;', multiple: true %>
+            <span onclick="document.getElementById('file_input').click();">
+              <i class="fas fa-plus"></i>
+            </span>
+            <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+          </div>
         <% end %>
-        <div class="col-md-11">
-          <span><i class="fas fa-plus"></i></span>
-          <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
-        </div>
       </div>
     <% else %>
       <div style="padding-bottom: 20px" >
@@ -121,8 +127,40 @@
       isClickSendButton = true;
     });
 
+    document.querySelector('form').addEventListener('submit', function(event) {
+      var htmlContent = quill.getSemanticHTML();
+      var quillContent = document.querySelector('#quill-content');
+      htmlContent = htmlContent.replace(/<pre([^>]*)data-language="plain"([^>]*)>([\s\S]*?)<\/pre>/g, function(match, attr1, attr2, content) {
+        content = content.trim().replace(/\n/g, '<br>');
+        return `<div${attr1}class="ql-code-block"${attr2}>${content}</div>`;
+      });
+      htmlContent = htmlContent.replace(/<\/blockquote>\s*<blockquote>/g, '<br>');
+      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
+      quillContent.value = htmlContent;
+
+      var files = document.getElementById('file_input').files;
+      if(files.length > 0) {
+        event.preventDefault();
+        var messageContent = quillContent.value.trim();
+        var draftStatus = false;
+        var mention_names = document.querySelector('.memtion_name').value;
+        var formData = {
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+            memtion_name: mention_names,
+          }
+        };
+        sendFormData(formData);
+      }
+    });
+
     $(window).bind('beforeunload', () => {
       var messageContent = quill.getText().trim();
+      var files = document.getElementById('file_input').files;
+      document.querySelector('form').addEventListener('submit', function(event) {
+          event.preventDefault();
+      });
       if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
         var draftStatus = true;
         var formData = {
@@ -161,6 +199,9 @@
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
           }
         });
+      }
+      else if ((files.length > 0 && messageContent.length === 0 && isClickSendButton) || (files.length > 0 && messageContent.length > 0 && isClickSendButton)) {
+        return;
       }
       else if (!isClickSendButton && messageContent.length === 0) {
         $.ajax({
@@ -291,19 +332,6 @@
       toolbarui.classList.toggle('hidden');
     });
 
-    var form = document.querySelector('form');
-    form.onsubmit = function() {
-      var htmlContent = quill.getSemanticHTML();
-      var quillContent = document.querySelector('#quill-content');
-      htmlContent = htmlContent.replace(/<pre([^>]*)data-language="plain"([^>]*)>([\s\S]*?)<\/pre>/g, function(match, attr1, attr2, content) {
-        content = content.trim().replace(/\n/g, '<br>');
-        return `<div${attr1}class="ql-code-block"${attr2}>${content}</div>`;
-      });
-      htmlContent = htmlContent.replace(/<\/blockquote>\s*<blockquote>/g, '<br>');
-      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
-      quillContent.value = htmlContent;
-    }
-
     // for mention select
     mention_names = [];
     $( "#editor" ).autocomplete({
@@ -374,14 +402,220 @@
     var sendbtn = document.querySelector(".sendbtn");
     sendbtn.disabled = true;
     quill.on('text-change', function(delta, oldDelta, source) {
-      const editorContent = quill.getText().trim();
-      if (editorContent.length > 0) {
-        sendbtn.disabled = false;
-      } else {
+      checkSendButton();
+    });
+
+    // files
+    var fileInput = document.getElementById('file_input');
+    var imageDialog = document.getElementById('image-dialog');
+    var dialogFilename = document.getElementById('dialog-filename');
+    var fullImage = document.getElementById('full-image');
+    var dialogClose = document.getElementById('dialog-close');
+    var overlay = document.getElementById('overlay');
+
+    function checkSendButton() {
+      var editorContent = quill.getText().trim();
+      var files = fileInput.files;
+      var sendbtn = document.querySelector(".sendbtn");
+      if(editorContent.length === 0 && files.length === 0) {
         sendbtn.disabled = true;
+      } else {
+        sendbtn.disabled = false;
+      }
+    }
+
+    function updateFileInput(index) {
+      const dt = new DataTransfer();
+      const files = fileInput.files;
+      for (let i = 0; i < files.length; i++) {
+        if (i !== index) {
+          dt.items.add(files[i]);
+        }
+      }
+      fileInput.files = dt.files;
+    }
+
+    var dt = new DataTransfer();
+    for (var j = 0; j < fileInput.files.length; j++) {
+      dt.items.add(fileInput.files[j]);
+    }
+    fileInput.files = dt.files;
+
+    fileInput.addEventListener('change', function(event) {
+      var fileContainer = document.getElementById('file-container');
+      const newFiles = event.target.files;
+      if(newFiles.length > 0) {
+        fileContainer.style.display = 'flex';
+        fileContainer.style.flexWrap = 'wrap';
+        for (var i = 0; i < newFiles.length; i++) {
+          (function(file, index) {
+            dt.items.add(file);
+            fileInput.files = dt.files;
+              
+            // Create a container for each file
+            var fileDiv = document.createElement('div');
+            fileDiv.classList.add('file-item');
+
+            // Create a remove button
+            var removeBtn = document.createElement('span');
+            removeBtn.classList.add('remove-btn');
+            removeBtn.innerHTML = '&times;';
+            
+            (function(div, idx) {
+              removeBtn.addEventListener('click', function() {
+                div.remove();
+                updateFileInput(idx);
+                checkSendButton();
+              });
+            })(fileDiv, index);
+
+            // Check if the file is an image
+            if (file.type.startsWith('image/')) {
+              var img = document.createElement('img');
+              img.classList.add('file-image');
+              
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                img.src = e.target.result;
+              };
+              reader.readAsDataURL(file);
+              fileDiv.style.padding = '0px';
+              fileDiv.style.width = '60px';
+              fileDiv.style.height = '60px';
+              fileDiv.appendChild(img);
+              fileDiv.appendChild(removeBtn);
+
+              img.addEventListener('click', function() {
+                fullImage.src = img.src;
+                dialogFilename.textContent = file.name;
+                imageDialog.style.display = 'flex';
+                overlay.style.display = 'block';
+              });
+            } else {
+              // Create a small container for the file initial
+              var initialDiv = document.createElement('div');
+              initialDiv.classList.add('file-initial');
+              
+              // Determine the content and background color based on file type
+              var fileType = file.type.split('/')[1];
+              if (fileType === 'vnd.openxmlformats-officedocument.spreadsheetml.sheet' || fileType === 'vnd.ms-excel') {
+                initialDiv.textContent = 'X';
+                initialDiv.style.backgroundColor = 'green';
+              } else if (fileType === 'plain') {
+                initialDiv.textContent = 'T';
+                initialDiv.style.backgroundColor = 'blue';
+              } else if (fileType === 'x-zip-compressed') {
+                initialDiv.innerHTML = '<i class="fas fa-file-zipper"></i>';
+                initialDiv.style.backgroundColor = 'blue';
+              } else if (fileType === 'pdf') {
+                initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
+                initialDiv.style.backgroundColor = 'red';
+              } else if (fileType === 'vnd.ms-powerpoint') {
+                initialDiv.textContent = 'P';
+                initialDiv.style.backgroundColor = 'red';
+              } else {
+                initialDiv.innerHTML = '<i class="fas fa-file-alt"></i>';
+                initialDiv.style.backgroundColor = 'blue';
+              }
+
+              // Create a div for the file details
+              var detailsDiv = document.createElement('div');
+              detailsDiv.classList.add('file-details');
+
+              // Create elements for the file details
+              var filenameSpan = document.createElement('span');
+              filenameSpan.classList.add('filename-span');
+              filenameSpan.textContent = file.name;
+
+              var filesizeSpan = document.createElement('span');
+              filesizeSpan.textContent = file.size < (1024 * 1024) 
+                ? (file.size / 1024).toFixed(2) + ' KB' 
+                : (file.size / (1024 * 1024)).toFixed(2) + ' MB'; // File size in KB or MB
+              filesizeSpan.style.display = 'block';
+
+              // Append file details to the detailsDiv
+              detailsDiv.appendChild(filenameSpan);
+              detailsDiv.appendChild(filesizeSpan);
+
+              // Append all to fileDiv
+              fileDiv.appendChild(removeBtn);
+              fileDiv.appendChild(initialDiv);
+              fileDiv.appendChild(detailsDiv);
+            }
+            fileContainer.appendChild(fileDiv);
+            var files = document.getElementById('file_input').files;
+          }) (newFiles[i], i);
+        }
+      } else {
+        fileContainer.style.display = 'none';
+      }
+      checkSendButton();
+    });
+
+    dialogClose.addEventListener('click', function() {
+      imageDialog.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+
+    // Hide the dialog when clicking outside the image
+    imageDialog.addEventListener('click', function(event) {
+      if (event.target === imageDialog) {
+        imageDialog.style.display = 'none';
+        overlay.style.display = 'none';
       }
     });
 
+    overlay.addEventListener('click', function() {
+      imageDialog.style.display = 'none';
+      overlay.style.display = 'none'; // Hide the overlay
+    });
+
+    // Function to convert files to JSON data
+    function filesToJSON(callback) {
+      const fileInput = document.getElementById('file_input');
+      const files = fileInput.files;
+      const filesArray = [];
+      let filesProcessed = 0;
+      if (files.length === 0) {
+        callback([]);
+        return;
+      }
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          filesArray.push({
+              data: e.target.result.split(',')[1],
+              mime: file.type,
+              file_name: file.name
+          });
+          filesProcessed++;
+          if (filesProcessed === files.length) {
+              callback(filesArray);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Function to handle form submission
+    function sendFormData(formData) {
+        filesToJSON(function(filesArray) {
+            formData['session']['files'] = filesArray;
+            $.ajax({
+              type: 'POST',
+              url: '<%= groupmsg_path %>',
+              contentType: 'application/json',
+              data: JSON.stringify(formData),
+              dataType: 'json',
+              headers: {
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+              },
+              complete : function(jqXHR, textStatus) {
+                location.reload();
+              },
+            });
+        });
+    }
   });
-  
 </script>

@@ -1,19 +1,21 @@
 <div class="txtmsg">
   <% @count = 0 %>
   <div id="directlist">
-    <div class="title">
-      <% if @s_user['image_url'].present? %>
-        <img src="<%= @s_user['image_url'] %>" alt="Profile Image" class="d-profile-image">
-      <% else %>
-        <div class="profile-placeholder" style="margin-left: 250px">
-          <%= @s_user['name'][0].upcase %>
-        </div>
-      <% end %>      
-      <h2 style="margin-left: 290px;"><%= @s_user['name'] %></h2> 
+    <div class="title">  
+      <div style="display: flex; align-items: center;">
+        <% if @s_user['image_url'].present? %>
+          <img src="<%= @s_user['image_url'] %>" alt="Profile Image" class="d-profile-image">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 50px; margin-top: 50px;">
+            <%= @s_user['name'][0].upcase %>
+          </div>
+        <% end %> 
+        <h2><%= @s_user['name'] %></h2> 
+      </div>
     </div>
     
     <div class="load-mode-container">
-      <div class="style6" style="top: 126px;">
+      <div class="style6" style="top: 100px;">
         <%= link_to "Load More", refresh_direct_url, class: 'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;' %>
       </div>
     </div>
@@ -55,6 +57,18 @@
           <% end %>
 
           <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(t_direct_message["directmsg"]) %></div>
+
+          <div class="style3" id="file-item-<%= t_direct_message["id"] %>" style="display: none;"></div>
+          <div id="overlay" class="overlay"></div>
+          <div id="image-dialog" class="dialog-container">
+            <div id="dialog-filename" class="dialog-filename"></div>
+            <div class="dialog-close-container">
+              <span id="dialog-close" class="dialog-close">&times;</span>
+            </div>
+            <div class="dialog-content">
+              <img id="full-image" src="" alt="Full Image">
+            </div>
+          </div>
           
           <div class="reactionBox">
             <% if @t_direct_react_msgids.include? t_direct_message["id"] %> <!-- Check if there is data in the table -->
@@ -94,7 +108,7 @@
       <% end %>
       <% end %>
     </div>
-
+    
   </div>
 </div>
 
@@ -145,6 +159,141 @@
       $('[data-toggle="tooltip"]').tooltip(
         {container:'body', trigger: 'hover', placement:"top"}
       );
+    });
+
+    // download function
+    function triggerDownload(url, filename) {
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const link = document.createElement('a');
+          const url = window.URL.createObjectURL(blob);
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
+    // Showing files
+    document.querySelectorAll('[id^=file-item-]').forEach(fileItem => {
+      const messageId = fileItem.id.replace('file-item-', '');
+      const message = <%= raw @t_direct_messages.to_json %>.find(msg => msg.id.toString() === messageId);
+      if (message && message.file_urls[0] !== null ) {
+        fileItem.style.display = "block";
+        message.file_urls.forEach((fileUrl, index) => {
+          const fileName = message.file_names[index];
+          const fileExtension = fileName.split('.').pop().toLowerCase();
+          if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
+            var fileContainer = document.createElement('div');
+            fileContainer.classList.add('image-container');
+            const img = document.createElement('img');
+            img.src = fileUrl;
+            img.alt = fileName;
+            img.classList.add('direct-file-image');
+            fileContainer.appendChild(img);
+            var fullImage = document.getElementById('full-image');
+            var imageDialog = document.getElementById('image-dialog');
+            var dialogFilename = document.getElementById('dialog-filename');
+            var dialogClose = document.getElementById('dialog-close');
+            var overlay = document.getElementById('overlay');
+            // download image
+            var downloadLink = document.createElement('button');
+            downloadLink.classList.add('image-download-icon');
+            var icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-download');
+            downloadLink.appendChild(icon);
+            fileContainer.appendChild(downloadLink);
+            fileItem.appendChild(fileContainer);
+            downloadLink.addEventListener('click', () => {
+              triggerDownload(fileUrl, fileName);
+            });
+            img.addEventListener('click', () => {
+              fullImage.src = img.src;
+                dialogFilename.textContent = img.alt;
+                imageDialog.style.display = 'flex';
+                overlay.style.display = 'block';
+            });
+            dialogClose.addEventListener('click', function() {
+              imageDialog.style.display = 'none';
+              overlay.style.display = 'none';
+            });
+            // Hide the dialog when clicking outside the image
+            imageDialog.addEventListener('click', function(event) {
+              if (event.target === imageDialog) {
+                imageDialog.style.display = 'none';
+                overlay.style.display = 'none';
+              }
+            });
+            overlay.addEventListener('click', function() {
+              imageDialog.style.display = 'none';
+              overlay.style.display = 'none'; // Hide the overlay
+            });
+          } else {
+            var fileContainer = document.createElement('div');
+            fileContainer.classList.add('file-container');
+            var initialDiv = document.createElement('div');
+            initialDiv.classList.add('file-initial');
+            if (['xls', 'xlsx', 'csv'].includes(fileExtension)) {
+              initialDiv.textContent = 'X';
+              initialDiv.style.backgroundColor = 'green';
+            } else if (fileExtension === 'txt') {
+              initialDiv.textContent = 'T';
+              initialDiv.style.backgroundColor = 'blue';
+            } else if (fileExtension === 'zip') {
+              initialDiv.innerHTML = '<i class="fas fa-file-zipper"></i>';
+              initialDiv.style.backgroundColor = 'blue';
+            } else if (fileExtension === 'pdf') {
+              initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
+              initialDiv.style.backgroundColor = 'red';
+            } else if (['ppt', 'pptx'].includes(fileExtension))  {
+              initialDiv.textContent = 'P';
+              initialDiv.style.backgroundColor = 'red';
+            } else {
+              initialDiv.innerHTML = '<i class="fas fa-file-alt"></i>';
+              initialDiv.style.backgroundColor = 'blue';
+            }
+            // Create a div for the file details
+            var detailsDiv = document.createElement('div');
+            detailsDiv.classList.add('file-details');
+            detailsDiv.style.marginRight = '10px';
+            // Create elements for the file details
+            var filenameSpan = document.createElement('span');
+            filenameSpan.classList.add('filename-span');
+            filenameSpan.textContent = fileName;
+            filenameSpan.style.width = '200px';
+            var textSpan = document.createElement('span');
+            textSpan.textContent = "Download to get file";
+            textSpan.style.display = 'block';
+            // Append file details to the detailsDiv
+            detailsDiv.appendChild(filenameSpan);
+            detailsDiv.appendChild(textSpan);
+            // download file
+            var downloadLink = document.createElement('button');
+            downloadLink.classList.add('download-icon');
+            var icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-download');
+            downloadLink.appendChild(icon);
+            downloadLink.addEventListener('click', () => {
+              triggerDownload(fileUrl, fileName);
+            });
+            // Append all to fileDiv
+            fileContainer.appendChild(initialDiv);
+            fileContainer.appendChild(detailsDiv);
+            fileContainer.appendChild(downloadLink);
+            fileItem.appendChild(fileContainer);
+          } 
+        });
+      }
     });
   });
 </script>
