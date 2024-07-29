@@ -52,6 +52,7 @@
       </div>
     <% end %>
   </div>
+</div>
 
 <div>
   <%= render "leftpanel/leftpanel" %>
@@ -139,7 +140,7 @@
       quillContent.value = htmlContent;
 
       var files = document.getElementById('file_input').files;
-      if(files.length > 0) {
+      if (files.length > 0) {
         event.preventDefault();
         var messageContent = quillContent.value.trim();
         var draftStatus = false;
@@ -243,11 +244,11 @@
     function toggleHighlight() {
       var format = quill.getFormat();
       if (format.highlight) {
-          quill.format('highlight', false);
-          isHighlighting = false;
+        quill.format('highlight', false);
+        isHighlighting = false;
       } else {
-          quill.format('highlight', true);
-          isHighlighting = true;
+        quill.format('highlight', true);
+        isHighlighting = true;
       }
       updateButtonText();
       quill.focus();
@@ -255,8 +256,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isHighlighting = !!format.highlight;
-        updateButtonText();
+      isHighlighting = !!format.highlight;
+      updateButtonText();
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
@@ -417,7 +418,7 @@
       var editorContent = quill.getText().trim();
       var files = fileInput.files;
       var sendbtn = document.querySelector(".sendbtn");
-      if(editorContent.length === 0 && files.length === 0) {
+      if (editorContent.length === 0 && files.length === 0) {
         sendbtn.disabled = true;
       } else {
         sendbtn.disabled = false;
@@ -444,7 +445,7 @@
     fileInput.addEventListener('change', function(event) {
       var fileContainer = document.getElementById('file-container');
       const newFiles = event.target.files;
-      if(newFiles.length > 0) {
+      if (newFiles.length > 0) {
         fileContainer.style.display = 'flex';
         fileContainer.style.flexWrap = 'wrap';
         for (var i = 0; i < newFiles.length; i++) {
@@ -585,13 +586,13 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           filesArray.push({
-              data: e.target.result.split(',')[1],
-              mime: file.type,
-              file_name: file.name
+            data: e.target.result.split(',')[1],
+            mime: file.type,
+            file_name: file.name
           });
           filesProcessed++;
           if (filesProcessed === files.length) {
-              callback(filesArray);
+            callback(filesArray);
           }
         };
         reader.readAsDataURL(file);
@@ -600,22 +601,22 @@
 
     // Function to handle form submission
     function sendFormData(formData) {
-        filesToJSON(function(filesArray) {
-            formData['session']['files'] = filesArray;
-            $.ajax({
-              type: 'POST',
-              url: '<%= groupmsg_path %>',
-              contentType: 'application/json',
-              data: JSON.stringify(formData),
-              dataType: 'json',
-              headers: {
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-              },
-              complete : function(jqXHR, textStatus) {
-                location.reload();
-              },
-            });
+      filesToJSON(function(filesArray) {
+        formData['session']['files'] = filesArray;
+        $.ajax({
+          type: 'POST',
+          url: '<%= groupmsg_path %>',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          dataType: 'json',
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+          complete : function(jqXHR, textStatus) {
+            location.reload();
+          },
         });
+      });
     }
   });
 </script>

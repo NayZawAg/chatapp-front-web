@@ -17,7 +17,7 @@
 
     <p class="style23"><%= @t_group_message["created_at"].to_time.strftime("%F") %>/<%= @t_group_message["created_at"].to_time.strftime("%I:%M%p") %></p>
 
-    <div class="style3" style="word-wrap: break-word; width: 550px">  <%= render_html(@t_group_message["groupmsg"]) %></div>
+    <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(@t_group_message["groupmsg"]) %></div>
 
     <div class="style3" id="pass-file-item" data-message="<%= @t_group_message.to_json %>" style="display: none;"></div>
     <div id="overlay" class="overlay"></div>
@@ -38,15 +38,15 @@
       <h2 class="style1">Reply</h2>
       <hr>
 
-    <% @t_group_threads.each do |t_group_thread| %>
-      <% if !t_group_thread['draft_message_status'] %>
-        <% if t_group_thread['image_url'].present? %>
-        <img src="<%= t_group_thread['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
-      <% else %>
-        <div class="profile-placeholder" style="margin-left: 250px">
-          <%= t_group_thread['name'][0].upcase %>
-        </div>
-      <% end %>
+      <% @t_group_threads.each do |t_group_thread| %>
+        <% if !t_group_thread['draft_message_status'] %>
+          <% if t_group_thread['image_url'].present? %>
+            <img src="<%= t_group_thread['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+          <% else %>
+            <div class="profile-placeholder" style="margin-left: 250px">
+              <%= t_group_thread['name'][0].upcase %>
+            </div>
+          <% end %>
 
           <p class="style22"><strong><%= t_group_thread["name"] %></strong></p>
 
@@ -97,7 +97,7 @@
                         <% userNames << react_userName["name"] %>
                       <% end %>
                       <% userIds << react_userName["userid"] %>
-                    <% end %>   
+                    <% end %>
                   <% end %>
                   <% if userIds.include? @current_user["id"] %>
                     <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_group_thread["id"] %>" data-message-id="<%= t_group_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
@@ -261,7 +261,7 @@
       quillContent.value = htmlContent;
 
       var files = document.getElementById('file_input').files;
-      if(files.length > 0) {
+      if (files.length > 0) {
         event.preventDefault();
         var messageContent = quillContent.value.trim();
         var draftStatus = false;
@@ -544,7 +544,7 @@
       var editorContent = quill.getText().trim();
       var files = fileInput.files;
       var sendbtn = document.querySelector(".sendbtn");
-      if(editorContent.length === 0 && files.length === 0) {
+      if (editorContent.length === 0 && files.length === 0) {
         sendbtn.disabled = true;
       } else {
         sendbtn.disabled = false;
@@ -571,7 +571,7 @@
     fileInput.addEventListener('change', function(event) {
       var fileContainer = document.getElementById('file-container');
       const newFiles = event.target.files;
-      if(newFiles.length > 0) {
+      if (newFiles.length > 0) {
         fileContainer.style.display = 'flex';
         fileContainer.style.flexWrap = 'wrap';
         for (var i = 0; i < newFiles.length; i++) {
@@ -712,13 +712,13 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             filesArray.push({
-                data: e.target.result.split(',')[1],
-                mime: file.type,
-                file_name: file.name
+              data: e.target.result.split(',')[1],
+              mime: file.type,
+              file_name: file.name
             });
             filesProcessed++;
             if (filesProcessed === files.length) {
-                callback(filesArray);
+              callback(filesArray);
             }
         };
         reader.readAsDataURL(file);
@@ -841,7 +841,7 @@
           } else if (fileExtension === 'pdf') {
             initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
             initialDiv.style.backgroundColor = 'red';
-          } else if (['ppt', 'pptx'].includes(fileExtension))  {
+          } else if (['ppt', 'pptx'].includes(fileExtension)) {
             initialDiv.textContent = 'P';
             initialDiv.style.backgroundColor = 'red';
           } else {
@@ -916,9 +916,9 @@
         });
         img.addEventListener('click', () => {
           fullImage.src = img.src;
-            dialogFilename.textContent = img.alt;
-            imageDialog.style.display = 'flex';
-            overlay.style.display = 'block';
+          dialogFilename.textContent = img.alt;
+          imageDialog.style.display = 'flex';
+          overlay.style.display = 'block';
         });
         dialogClose.addEventListener('click', function() {
           imageDialog.style.display = 'none';
@@ -952,7 +952,7 @@
         } else if (fileExtension === 'pdf') {
           initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
           initialDiv.style.backgroundColor = 'red';
-        } else if (['ppt', 'pptx'].includes(fileExtension))  {
+        } else if (['ppt', 'pptx'].includes(fileExtension)) {
           initialDiv.textContent = 'P';
           initialDiv.style.backgroundColor = 'red';
         } else {

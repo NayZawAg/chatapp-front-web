@@ -40,7 +40,7 @@
         <div class="profile-placeholder" style="margin-left: 250px">
           <%= t_direct_thread['name'][0].upcase %>
         </div>
-      <% end %>  
+      <% end %>
         <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
         <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
         <p class="style24"></p> 
@@ -135,7 +135,7 @@
         <%= f.hidden_field :message, id: "quill-content" %>
       </div>
       <div class="col-md-1 mt-10">
-        <%= f.hidden_field :draft_status, value: false %>  
+        <%= f.hidden_field :draft_status, value: false %>
         <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
       </div>
     
@@ -236,14 +236,14 @@
       quillContent.value = htmlContent;
 
       var files = document.getElementById('file_input').files;
-      if(files.length > 0) {
+      if (files.length > 0) {
         event.preventDefault();
         var messageContent = quillContent.value.trim();
         var draftStatus = false;
         var formData = {
           session: {
             message: messageContent,
-            draft_status: draftStatus,          
+            draft_status: draftStatus,
           }
         };
         sendFormData(formData);
@@ -255,7 +255,7 @@
       var messageContent = quill.getText().trim();
       var files = document.getElementById('file_input').files;
       document.querySelector('form').addEventListener('submit', function(event) {
-          event.preventDefault(); 
+        event.preventDefault(); 
       });
       if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
         var draftStatus = true;
@@ -440,7 +440,7 @@
       var editorContent = quill.getText().trim();
       var files = fileInput.files;
       var sendbtn = document.querySelector(".sendbtn");
-      if(editorContent.length === 0 && files.length === 0) {
+      if (editorContent.length === 0 && files.length === 0) {
         sendbtn.disabled = true;
       } else {
         sendbtn.disabled = false;
@@ -467,7 +467,7 @@
     fileInput.addEventListener('change', function(event) {
       var fileContainer = document.getElementById('file-container');
       const newFiles = event.target.files;
-      if(newFiles.length > 0) {
+      if (newFiles.length > 0) {
         fileContainer.style.display = 'flex';
         fileContainer.style.flexWrap = 'wrap';
         for (var i = 0; i < newFiles.length; i++) {
@@ -737,7 +737,7 @@
           } else if (fileExtension === 'pdf') {
             initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
             initialDiv.style.backgroundColor = 'red';
-          } else if (['ppt', 'pptx'].includes(fileExtension))  {
+          } else if (['ppt', 'pptx'].includes(fileExtension)) {
             initialDiv.textContent = 'P';
             initialDiv.style.backgroundColor = 'red';
           } else {
@@ -773,7 +773,7 @@
           fileContainer.appendChild(detailsDiv);
           fileContainer.appendChild(downloadLink);
           fileItem.appendChild(fileContainer);
-        } 
+        }
       });
     }
   });
@@ -848,7 +848,7 @@
         } else if (fileExtension === 'pdf') {
           initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
           initialDiv.style.backgroundColor = 'red';
-        } else if (['ppt', 'pptx'].includes(fileExtension))  {
+        } else if (['ppt', 'pptx'].includes(fileExtension)) {
           initialDiv.textContent = 'P';
           initialDiv.style.backgroundColor = 'red';
         } else {
@@ -884,7 +884,7 @@
         fileContainer.appendChild(detailsDiv);
         fileContainer.appendChild(downloadLink);
         passFileItem.appendChild(fileContainer);
-      } 
+      }
     });
   }
 </script>

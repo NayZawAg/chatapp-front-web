@@ -1,50 +1,50 @@
 <div id="main">
-    <%= render 'direct_show/directmsglists' %>
-    <div class = "textboxbg">
-      <div class="textboxeditor">
+  <%= render 'direct_show/directmsglists' %>
+  <div class = "textboxbg">
+    <div class="textboxeditor">
 
-        <div id="toolbar">
-          <button class="ql-bold"></button>
-          <button class="ql-italic"></button>
-          <button class="ql-strike"></button>
-          <button class="ql-link"></button>
-          <button class="ql-list" value="ordered"></button>
-          <button class="ql-list" value="bullet"></button>
-          <button class="ql-blockquote"></button>
-          <button class="ql-code-block"></button>
-          <button id="highlight-text" class="btn-icon"><i class="fas fa-laptop-code"></i></button>
-        </div>
-
-        <div id="link-dialog" style="display: none;">
-          <h3 id= "link-title">Add your link</h3>
-          <input type="text" id="link-name" placeholder="Enter link name">
-          <input type="text" id="link-url" placeholder="Enter URL">
-          <button id="link-cancel">Cancel</button>
-          <button id="link-save">Yes</button>
-        </div>
-
-        <div id="file-container" style="display: none; margin-top: 10px;"></div>
-
-        <%= form_for(:session, url: directmsg_path) do |f| %>
-          <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
-            <div id="editor"></div>
-            <%= f.hidden_field :message, id: "quill-content" %>
-            <%= f.hidden_field :draft_status, value: false %>
-          </div>
-          <div class="col-md-1 mt-10">
-            <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
-          </div>
-
-          <div class="col-md-11">
-            <%= f.file_field :file, id: 'file_input', style: 'display: none;', multiple: true %>
-            <span onclick="document.getElementById('file_input').click();">
-              <i class="fas fa-plus"></i>
-            </span>
-            <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
-          </div>
-        <% end %>
+      <div id="toolbar">
+        <button class="ql-bold"></button>
+        <button class="ql-italic"></button>
+        <button class="ql-strike"></button>
+        <button class="ql-link"></button>
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-blockquote"></button>
+        <button class="ql-code-block"></button>
+        <button id="highlight-text" class="btn-icon"><i class="fas fa-laptop-code"></i></button>
       </div>
+
+      <div id="link-dialog" style="display: none;">
+        <h3 id= "link-title">Add your link</h3>
+        <input type="text" id="link-name" placeholder="Enter link name">
+        <input type="text" id="link-url" placeholder="Enter URL">
+        <button id="link-cancel">Cancel</button>
+        <button id="link-save">Yes</button>
+      </div>
+
+      <div id="file-container" style="display: none; margin-top: 10px;"></div>
+
+      <%= form_for(:session, url: directmsg_path) do |f| %>
+        <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
+          <div id="editor"></div>
+          <%= f.hidden_field :message, id: "quill-content" %>
+          <%= f.hidden_field :draft_status, value: false %>
+        </div>
+        <div class="col-md-1 mt-10">
+          <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
+        </div>
+
+        <div class="col-md-11">
+          <%= f.file_field :file, id: 'file_input', style: 'display: none;', multiple: true %>
+          <span onclick="document.getElementById('file_input').click();">
+            <i class="fas fa-plus"></i>
+          </span>
+          <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+        </div>
+      <% end %>
     </div>
+  </div>
 </div>
 
 <div>
@@ -133,7 +133,7 @@
       quillContent.value = htmlContent;
 
       var files = document.getElementById('file_input').files;
-      if(files.length > 0) {
+      if (files.length > 0) {
         event.preventDefault();
         var messageContent = quillContent.value.trim();
         var draftStatus = false;
@@ -295,7 +295,7 @@
             quill.setSelection(range.index + linkText.length, 0);
 
           hideLinkDialog();
-        } 
+        }
       };
 
       document.getElementById('link-cancel').onclick = function() {
@@ -342,7 +342,7 @@
       var editorContent = quill.getText().trim();
       var files = fileInput.files;
       var sendbtn = document.querySelector(".sendbtn");
-      if(editorContent.length === 0 && files.length === 0) {
+      if (editorContent.length === 0 && files.length === 0) {
         sendbtn.disabled = true;
       } else {
         sendbtn.disabled = false;
@@ -369,7 +369,7 @@
     fileInput.addEventListener('change', function(event) {
       var fileContainer = document.getElementById('file-container');
       const newFiles = event.target.files;
-      if(newFiles.length > 0) {
+      if (newFiles.length > 0) {
         fileContainer.style.display = 'flex';
         fileContainer.style.flexWrap = 'wrap';
         for (var i = 0; i < newFiles.length; i++) {
@@ -540,5 +540,5 @@
         });
       });
     }
-});
+  });
 </script>
