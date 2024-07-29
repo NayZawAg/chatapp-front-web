@@ -7,11 +7,10 @@ class GroupMessageController < ApplicationController
 
     if session[:s_channel_id].nil?
       redirect_to home_url
-    elsif params[:session][:message].blank?
-      redirect_to m_channel_path(session[:s_channel_id])
     else
       message = params[:session][:message]
       draft_status = params[:session][:draft_status]
+      files = params[:session][:files]
       mention_name = params[:session][:memtion_name]
       if mention_name.present?
         mention_names = JSON.parse(mention_name)
@@ -23,6 +22,7 @@ class GroupMessageController < ApplicationController
         "s_channel_id": session[:s_channel_id],
         "mention_name": mention_names,
         "draft_message_status": draft_status,
+        "files": files
       }
       post_data("/groupmsg", data)
 
@@ -37,11 +37,10 @@ class GroupMessageController < ApplicationController
       end
     elsif session[:s_channel_id].nil?
       redirect_to home_url
-    elsif params[:session][:message].blank?
-      redirect_to t_group_message_path(session[:s_group_message_id])
     else
       message = params[:session][:message]
       draft_status = params[:session][:draft_status]
+      files = params[:session][:files]
       mention_name = params[:session][:memtion_name]
       if mention_name.present?
         mention_names = JSON.parse(mention_name)
@@ -54,6 +53,7 @@ class GroupMessageController < ApplicationController
         "message": message,
         "mention_name": mention_names,
         "draft_message_status": draft_status,
+        "files": files
       }
       post_data("/groupthreadmsg", data)
       redirect_to t_group_message_path(session[:s_group_message_id])

@@ -2,99 +2,113 @@
   <% @count = 0 %>
   <div id="directlist">
     <div class="title">
-      <% if @s_user['image_url'].present? %>
-        <img src="<%= @s_user['image_url'] %>" alt="Profile Image" class="d-profile-image">
-      <% else %>
-        <div class="profile-placeholder" style="margin-left: 250px">
-          <%= @s_user['name'][0].upcase %>
-        </div>
-      <% end %>      
-      <h2 style="margin-left: 290px;"><%= @s_user['name'] %></h2> 
+      <div style="display: flex; align-items: center;">
+        <% if @s_user['image_url'].present? %>
+          <img src="<%= @s_user['image_url'] %>" alt="Profile Image" class="d-profile-image">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 50px; margin-top: 50px;">
+            <%= @s_user['name'][0].upcase %>
+          </div>
+        <% end %>
+        <h2><%= @s_user['name'] %></h2>
+      </div>
     </div>
     
     <div class="load-mode-container">
-      <div class="style6" style="top: 126px;">
+      <div class="style6" style="top: 100px;">
         <%= link_to "Load More", refresh_direct_url, class: 'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;' %>
       </div>
     </div>
 
     <div class="message-content" style="margin-top: 40px;">
       <% @t_direct_message_dates.each do |t_direct_date| %>
-      <h2 class="style1"><%= t_direct_date['created_date'] %></h2>
-      <% 
-      direct_messages_for_date = @t_direct_messages.select { |msg| msg['created_at'].to_date == Date.parse(t_direct_date['created_date']) } 
-      # Check if direct_messages_for_date is correctly populated
-      %>
-      <% direct_messages_for_date.each do |t_direct_message| %>
-        <% if !t_direct_message['draft_message_status'] %>
-          <% if t_direct_message['image_url'].present? %>
-          <img src="<%= t_direct_message['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
-        <% else %>
-          <div class="profile-placeholder" style="margin-left: 250px">
-            <%= t_direct_message['name'][0].upcase %>
-          </div>
-        <% end %>
-          <p class="style22"><strong><%= t_direct_message['name'] %></strong></p>
-          <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-          <p class="style24"><%= link_to t_direct_message['count'], t_direct_message_path(id: t_direct_message['id']), class: 'fab fa-facebook-messenger' %></p>
-          
-          <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { message_id: t_direct_message["id"] }, style: "text-decoration:none;" %>
-
-          <% if @t_direct_star_msgids.include?(t_direct_message["id"]) %>
-            <%= link_to "", unstar_path(id: t_direct_message["id"]), class: "fas fa-star style22" %>
+        <h2 class="style1"><%= t_direct_date['created_date'] %></h2>
+        <% 
+        direct_messages_for_date = @t_direct_messages.select { |msg| msg['created_at'].to_date == Date.parse(t_direct_date['created_date']) } 
+        # Check if direct_messages_for_date is correctly populated
+        %>
+        <% direct_messages_for_date.each do |t_direct_message| %>
+          <% if !t_direct_message['draft_message_status'] %>
+            <% if t_direct_message['image_url'].present? %>
+            <img src="<%= t_direct_message['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
           <% else %>
-            <%= link_to "", star_path(id: t_direct_message["id"]), class: "far fa-star style22" %>
+            <div class="profile-placeholder" style="margin-left: 250px">
+              <%= t_direct_message['name'][0].upcase %>
+            </div>
           <% end %>
+            <p class="style22"><strong><%= t_direct_message['name'] %></strong></p>
+            <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+            <p class="style24"><%= link_to t_direct_message['count'], t_direct_message_path(id: t_direct_message['id']), class: 'fab fa-facebook-messenger' %></p>
+            
+            <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { message_id: t_direct_message["id"] }, style: "text-decoration:none;" %>
 
-          <% if session[:m_user] == t_direct_message["name"] %>
-            <%= link_to "", edit_directmsg_path(id: t_direct_message["id"]), class: "far fa-edit style22", id: "editbtn" %>
-          <% end %>
+            <% if @t_direct_star_msgids.include?(t_direct_message["id"]) %>
+              <%= link_to "", unstar_path(id: t_direct_message["id"]), class: "fas fa-star style22" %>
+            <% else %>
+              <%= link_to "", star_path(id: t_direct_message["id"]), class: "far fa-star style22" %>
+            <% end %>
 
-          <% if session[:m_user] == t_direct_message["name"] %>
-            <%= link_to "", delete_directmsg_path(id: t_direct_message["id"]), class: "glyphicon glyphicon-trash style22" %>
-          <% end %>
+            <% if session[:m_user] == t_direct_message["name"] %>
+              <%= link_to "", edit_directmsg_path(id: t_direct_message["id"]), class: "far fa-edit style22", id: "editbtn" %>
+            <% end %>
 
-          <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(t_direct_message["directmsg"]) %></div>
-          
-          <div class="reactionBox">
-            <% if @t_direct_react_msgids.include? t_direct_message["id"] %> <!-- Check if there is data in the table -->
-              <% userNames = [] %>
-              <% userIds = [] %>
-              <% @t_direct_msg_emojiscounts.each do |emoji_count| %>
-                <% if emoji_count["directmsgid"] == t_direct_message["id"] %>
-                  <% @react_usernames.each do |react_userName| %>
-                    <% if emoji_count["directmsgid"] == react_userName["directmsgid"] && emoji_count["emoji"] == react_userName["emoji"] %>
-                      <% if react_userName["name"] == @current_user["name"] %>
-                          <% userNames << "#{react_userName["name"]}(自分)" %>
-                      <% else %>
-                          <% userNames << react_userName["name"] %>
-                      <% end %>
-                      <% userIds << react_userName["userid"] %>
-                    <% end %>
-                  <% end %>
-                  <% if userIds.include? @current_user["id"] %>
-                    <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_direct_message["id"] %>" data-message-id="<%= t_direct_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
-                      <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directreact_path(message_id: t_direct_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
-                    </button>
-                  <% else %>
-                    <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_direct_message["id"] %>" data-message-id="<%= t_direct_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
-                      <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directreact_path(message_id: t_direct_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
-                    </button>
-                  <% end %>
-                <% end %>
+            <% if session[:m_user] == t_direct_message["name"] %>
+              <%= link_to "", delete_directmsg_path(id: t_direct_message["id"]), class: "glyphicon glyphicon-trash style22" %>
+            <% end %>
+
+            <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(t_direct_message["directmsg"]) %></div>
+
+            <div class="style3" id="file-item-<%= t_direct_message["id"] %>" style="display: none;"></div>
+            <div id="overlay" class="overlay"></div>
+            <div id="image-dialog" class="dialog-container">
+              <div id="dialog-filename" class="dialog-filename"></div>
+              <div class="dialog-close-container">
+                <span id="dialog-close" class="dialog-close">&times;</span>
+              </div>
+              <div class="dialog-content">
+                <img id="full-image" src="" alt="Full Image">
+              </div>
+            </div>
+            
+            <div class="reactionBox">
+              <% if @t_direct_react_msgids.include? t_direct_message["id"] %> <!-- Check if there is data in the table -->
                 <% userNames = [] %>
                 <% userIds = [] %>
+                <% @t_direct_msg_emojiscounts.each do |emoji_count| %>
+                  <% if emoji_count["directmsgid"] == t_direct_message["id"] %>
+                    <% @react_usernames.each do |react_userName| %>
+                      <% if emoji_count["directmsgid"] == react_userName["directmsgid"] && emoji_count["emoji"] == react_userName["emoji"] %>
+                        <% if react_userName["name"] == @current_user["name"] %>
+                          <% userNames << "#{react_userName["name"]}(自分)" %>
+                        <% else %>
+                          <% userNames << react_userName["name"] %>
+                        <% end %>
+                        <% userIds << react_userName["userid"] %>
+                      <% end %>
+                    <% end %>
+                    <% if userIds.include? @current_user["id"] %>
+                      <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_direct_message["id"] %>" data-message-id="<%= t_direct_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                        <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directreact_path(message_id: t_direct_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                      </button>
+                    <% else %>
+                      <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_direct_message["id"] %>" data-message-id="<%= t_direct_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                        <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directreact_path(message_id: t_direct_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                      </button>
+                    <% end %>
+                  <% end %>
+                  <% userNames = [] %>
+                  <% userIds = [] %>
+                <% end %>
               <% end %>
-            <% end %>
-          </div>
+            </div>
+            
+            <hr>
+          <% end %>
           
-          <hr>
         <% end %>
-        
-      <% end %>
       <% end %>
     </div>
-
+    
   </div>
 </div>
 
@@ -143,8 +157,143 @@
     // Initialize all tooltips
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip(
-        {container:'body', trigger: 'hover', placement:"top"}
+        {container: 'body', trigger: 'hover', placement: "top"}
       );
+    });
+
+    // download function
+    function triggerDownload(url, filename) {
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const link = document.createElement('a');
+          const url = window.URL.createObjectURL(blob);
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
+    // Showing files
+    document.querySelectorAll('[id^=file-item-]').forEach(fileItem => {
+      const messageId = fileItem.id.replace('file-item-', '');
+      const message = <%= raw @t_direct_messages.to_json %>.find(msg => msg.id.toString() === messageId);
+      if (message && message.file_urls[0] !== null ) {
+        fileItem.style.display = "block";
+        message.file_urls.forEach((fileUrl, index) => {
+          const fileName = message.file_names[index];
+          const fileExtension = fileName.split('.').pop().toLowerCase();
+          if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
+            var fileContainer = document.createElement('div');
+            fileContainer.classList.add('image-container');
+            const img = document.createElement('img');
+            img.src = fileUrl;
+            img.alt = fileName;
+            img.classList.add('direct-file-image');
+            fileContainer.appendChild(img);
+            var fullImage = document.getElementById('full-image');
+            var imageDialog = document.getElementById('image-dialog');
+            var dialogFilename = document.getElementById('dialog-filename');
+            var dialogClose = document.getElementById('dialog-close');
+            var overlay = document.getElementById('overlay');
+            // download image
+            var downloadLink = document.createElement('button');
+            downloadLink.classList.add('image-download-icon');
+            var icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-download');
+            downloadLink.appendChild(icon);
+            fileContainer.appendChild(downloadLink);
+            fileItem.appendChild(fileContainer);
+            downloadLink.addEventListener('click', () => {
+              triggerDownload(fileUrl, fileName);
+            });
+            img.addEventListener('click', () => {
+              fullImage.src = img.src;
+                dialogFilename.textContent = img.alt;
+                imageDialog.style.display = 'flex';
+                overlay.style.display = 'block';
+            });
+            dialogClose.addEventListener('click', function() {
+              imageDialog.style.display = 'none';
+              overlay.style.display = 'none';
+            });
+            // Hide the dialog when clicking outside the image
+            imageDialog.addEventListener('click', function(event) {
+              if (event.target === imageDialog) {
+                imageDialog.style.display = 'none';
+                overlay.style.display = 'none';
+              }
+            });
+            overlay.addEventListener('click', function() {
+              imageDialog.style.display = 'none';
+              overlay.style.display = 'none'; // Hide the overlay
+            });
+          } else {
+            var fileContainer = document.createElement('div');
+            fileContainer.classList.add('file-container');
+            var initialDiv = document.createElement('div');
+            initialDiv.classList.add('file-initial');
+            if (['xls', 'xlsx', 'csv'].includes(fileExtension)) {
+              initialDiv.textContent = 'X';
+              initialDiv.style.backgroundColor = 'green';
+            } else if (fileExtension === 'txt') {
+              initialDiv.textContent = 'T';
+              initialDiv.style.backgroundColor = 'blue';
+            } else if (fileExtension === 'zip') {
+              initialDiv.innerHTML = '<i class="fas fa-file-zipper"></i>';
+              initialDiv.style.backgroundColor = 'blue';
+            } else if (fileExtension === 'pdf') {
+              initialDiv.innerHTML = '<i class="fas fa-file-pdf"></i>';
+              initialDiv.style.backgroundColor = 'red';
+            } else if (['ppt', 'pptx'].includes(fileExtension))  {
+              initialDiv.textContent = 'P';
+              initialDiv.style.backgroundColor = 'red';
+            } else {
+              initialDiv.innerHTML = '<i class="fas fa-file-alt"></i>';
+              initialDiv.style.backgroundColor = 'blue';
+            }
+            // Create a div for the file details
+            var detailsDiv = document.createElement('div');
+            detailsDiv.classList.add('file-details');
+            detailsDiv.style.marginRight = '10px';
+            // Create elements for the file details
+            var filenameSpan = document.createElement('span');
+            filenameSpan.classList.add('filename-span');
+            filenameSpan.textContent = fileName;
+            filenameSpan.style.width = '200px';
+            var textSpan = document.createElement('span');
+            textSpan.textContent = "Download to get file";
+            textSpan.style.display = 'block';
+            // Append file details to the detailsDiv
+            detailsDiv.appendChild(filenameSpan);
+            detailsDiv.appendChild(textSpan);
+            // download file
+            var downloadLink = document.createElement('button');
+            downloadLink.classList.add('download-icon');
+            var icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-download');
+            downloadLink.appendChild(icon);
+            downloadLink.addEventListener('click', () => {
+              triggerDownload(fileUrl, fileName);
+            });
+            // Append all to fileDiv
+            fileContainer.appendChild(initialDiv);
+            fileContainer.appendChild(detailsDiv);
+            fileContainer.appendChild(downloadLink);
+            fileItem.appendChild(fileContainer);
+          }
+        });
+      }
     });
   });
 </script>

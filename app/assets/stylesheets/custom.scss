@@ -550,10 +550,13 @@ ul.s_countnumber li.countnumbertwo {
 
 div.title {
   top: 0;
+  left: 200px; 
   position: fixed;
   background-color: #F4F4F4;
   border: #F4F4F4 solid 2px;
   width: 100%;
+  height: 100px;
+  z-index: 10;
 }
 
 div.textboxbg {
@@ -835,14 +838,14 @@ div .ql-code-block {
 }
 
 .d-profile-image {
+  display: inline-block;
   width: 30px; 
   height: 30px; 
   border: 1px solid #dad4d4;
   border-radius: 50%; 
   margin-right: 5px; 
-  position: relative;
-  left: 250px;
-  top: 87px;
+  margin-left: 50px;
+  margin-top: 50px;
 }
 
 .profile-placeholder {
@@ -874,7 +877,7 @@ div .ql-code-block {
 .style6 {
   position: fixed;
   width: 100%;
-  top: 105px; 
+  top: 100px; 
   left: 250px; 
   z-index: 10;
   background-color: #fff; 
@@ -1020,5 +1023,217 @@ hr.bold-hr {
 
 .fa {
   margin-right: 2px;
+}
+
+.file-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 5px;
+  width: 250px;
+}
+
+.file-initial {
+  width: 30px;
+  height: 30px;
+  background-color: #007bff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30%;
+  margin-right: 10px;
+}
+
+.remove-btn {
+  display: none;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  cursor: pointer;
+  font-size: 18px;
+  color: white;
+  border: 1px solid grey;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  background-color: grey;
+  z-index: 10;
+}
+
+.remove-btn:hover {
+  border: 1px solid black;
+  background-color: black;
+}
+
+.file-item:hover .remove-btn {
+  display: flex; 
+}
+
+.file-details span {
+  display: block;
+}
+
+.file-container {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 10px;
+  width: 300px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.file-image {
+  width: 60px;
+  height: 60px; 
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.direct-file-image {
+  width: 200px;
+  height: 200px; 
+  object-fit: cover;
+  border-radius: 15px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.filename-span {
+  display: block;
+  font-weight: bold;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.download-icon {
+  color: rgb(82, 77, 77);
+  text-decoration: none;
+  font-size: 15px;
+  border: none;
+  background-color: transparent;
+}
+
+.download-icon:hover {
+  color: black;
+}
+
+.image-download-icon {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 3px;
+  border-radius: 30%;
+  color: white; 
+}
+
+.image-download-icon:hover {
+  color: #ccc;
+}
+
+.image-container:hover .image-download-icon {
+  display: block;
+}
+
+.dialog-container {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 10%;
+  top: 8%;
+  right: 10%;
+  bottom: 10%;
+  width: 80%;
+  height: 90%;
+  overflow: auto;
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-filename {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 1100; /* Ensure the filename is above other content */
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.dialog-content {
+  position: relative;
+  padding: 10px;
+  max-width: 80%;
+  max-height: 100%;
+}
+
+.dialog-close-container {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 30%;
+  transition: background-color 0.3s, border-color 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1100;
+}
+
+.dialog-container:hover .dialog-close-container {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+.dialog-close {
+  font-size: 30px;
+  cursor: pointer;
+  color: black;
+}
+
+.dialog-close-container:hover {
+  background-color: #e0e0e0;
+  border-color: #b0b0b0;
+}
+
+.dialog-content img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  z-index: 900;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
